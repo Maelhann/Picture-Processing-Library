@@ -1,4 +1,7 @@
 #include <iostream>
+#include <string>
+#include <sstream>
+#include <iterator>
 
 #include "Colour.hpp"
 #include "Utils.hpp"
@@ -11,13 +14,28 @@ using namespace std;
 
 int main(int argc, char ** argv)
 {
+  while(true){
+  string command;
+  cin >> command; 
+  istringstream iss(command);  
+  vector<string> arguments(istream_iterator<string>{iss},istream_iterator<string>());
+   
+   switch(arguments[0]){
+   case "liststore" : ; break;
+   case "load" : ; break ; 
+   case "unload" : ; break ; 
+   case "save" : ; break ;
+   case "display" : ; break ; 
+   case "invert" : ; break ;
+   case "grayscale" : ; break ;
+   case "rotate" :  ; break;
+   case "flip" : ; break ;   
+   case "blur" : ; break ; 
+   case "exit" : return ;
 
-  cout << "------------------------------------------------------" << endl; 
-  cout << "TODO: Implement the C++ Picture Processing Interpreter" << endl;
-  cout << "------------------------------------------------------" << endl;
 
-  // write main IO loop that runs the command-line interpreter interactive shell
-
+   } 
+  }
   return 0;
 
 }
