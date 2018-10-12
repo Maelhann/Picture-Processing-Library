@@ -5,13 +5,15 @@
 #include "Utils.hpp"
 
 class PicLibrary {
-
+ 
+  
   private:
-  // TODO: define internal picture storage 
+  
+  map<string,Picture> store;
+   
 
   public:
-  // defaiult constructor/deconstructor
-  PicLibrary(){};
+   PicLibrary(){};
   ~PicLibrary(){};
 
   // command-line interpreter routines
@@ -20,8 +22,11 @@ class PicLibrary {
   void unloadpicture(string filename);
   void savepicture(string filename, string path);
   void display(string filename);
+  void add_to_store(Picture image, string filename);
+  void remove_from_store(string filename);
   
   // picture transformation routines
+   
   void invert(string filename);
   void grayscale(string filename);
   void rotate(int angle, string filename);
