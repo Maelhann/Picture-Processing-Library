@@ -57,19 +57,21 @@ int main(int argc, char **argv) {
                 lib.unloadpicture(arg);
                 break;
             case 4 :
-                 arguments >> arg;
-                 arguments >> arg2;
-                 lib.savepicture(arg,arg2);
+                arguments >> arg;
+                arguments >> arg2;
+                lib.savepicture(arg, arg2);
                 break;
             case 5 :
-                arguments >> arg ;
+                arguments >> arg;
                 lib.display(arg);
                 break;
             case 6 :
                 arguments >> arg;
                 lib.invert(arg);
                 break;
-            case 7 :;
+            case 7 :
+                 arguments >> arg;
+                 lib.grayscale(arg);
                 break;
             case 8 :;
                 break;

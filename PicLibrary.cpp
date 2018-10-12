@@ -56,14 +56,29 @@ void PicLibrary::invert(string filename) {
     Picture pic = getpicture(filename);
     for (int x = 0; x < pic.getwidth(); x++) {
         for (int y = 0; y < pic.getheight(); y++) {
-            Colour newcolor = pic.getpixel(x,y);
+            Colour newcolor = pic.getpixel(x, y);
             newcolor.setblue(255 - newcolor.getblue());
             newcolor.setgreen(255 - newcolor.getgreen());
             newcolor.setred(255 - newcolor.getred());
-            pic.setpixel(x,y,newcolor);
+            pic.setpixel(x, y, newcolor);
         }
     }
-    setpicture(filename,pic);
+    setpicture(filename, pic);
+}
+
+void PicLibrary::grayscale(string filename) {
+    Picture pic = getpicture(filename);
+    for (int x = 0; x < pic.getwidth(); x++) {
+        for (int y = 0; y < pic.getheight(); y++) {
+            Colour newcolor = pic.getpixel(x, y);
+            int graycolor = (newcolor.getred() + newcolor.getgreen() + newcolor.getblue()) / 3;
+            newcolor.setred(graycolor);
+            newcolor.setgreen(graycolor);
+            newcolor.setblue(graycolor);
+            pic.setpixel(x, y, newcolor);
+        }
+    }
+    setpicture(filename, pic);
 }
 
 
