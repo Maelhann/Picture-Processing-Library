@@ -65,7 +65,9 @@ int main(int argc, char **argv) {
                 arguments >> arg ;
                 lib.display(arg);
                 break;
-            case 6 :;
+            case 6 :
+                arguments >> arg;
+                lib.invert(arg);
                 break;
             case 7 :;
                 break;

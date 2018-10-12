@@ -22,7 +22,8 @@ class PicLibrary {
   void unloadpicture(string filename);
   void savepicture(string filename, string path);
   void display(string filename);
-
+  Picture getpicture(string filename);
+  void setpicture(string filename,Picture picture);
   // picture transformation routines
    
   void invert(string filename);
