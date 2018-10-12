@@ -4,15 +4,27 @@
 
 using namespace std;
 
-void PicLibrary::add_to_store(Picture image, string filename) {
+/* void PicLibrary::add_to_store(Picture image, string filename) {
     PicLibrary::store.insert(pair<string, Picture>(filename, image));
+}*/
+
+void PicLibrary::loadpicture(string path, string filename) {
+    Utils util;
+    Picture picture;
+    picture.setimage(util.loadimage(path));
+    PicLibrary::store.insert(pair<string, Picture>(filename, picture));
 }
 
-void PicLibrary::remove_from_store(string filename) {
+void PicLibrary::unloadpicture(string filename) {
     PicLibrary::store.erase(filename);
 }
 
-void PicLibrary::print_picturestore() {
+ /* void PicLibrary::remove_from_store(string filename) {
+    PicLibrary::store.erase(filename);
+    }
+ */
+
+ void PicLibrary::print_picturestore() {
     for (auto cursor = PicLibrary::store.begin(); cursor != PicLibrary::store.end(); ++cursor) {
         cout << cursor->first;
     }

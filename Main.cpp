@@ -49,13 +49,12 @@ int main(int argc, char **argv) {
                 break;
             case 2 :
                 arguments >> arg;
-                picture = Picture(arg);
-                arguments >> arg;
-                lib.add_to_store(picture, arg);
+                arguments >> arg2;
+                lib.loadpicture(arg, arg2);
                 break;
             case 3 :
                 arguments >> arg;
-                lib.remove_from_store(arg);
+                lib.unloadpicture(arg);
                 break;
             case 4 :
                  arguments >> arg;

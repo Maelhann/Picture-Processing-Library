@@ -22,9 +22,7 @@ class PicLibrary {
   void unloadpicture(string filename);
   void savepicture(string filename, string path);
   void display(string filename);
-  void add_to_store(Picture image, string filename);
-  void remove_from_store(string filename);
-  
+
   // picture transformation routines
    
   void invert(string filename);
