@@ -27,6 +27,16 @@ int main(int argc, char **argv) {
     PicLibrary lib;
     Picture picture;
     Mat image = Mat();
+    int i = 1;
+
+    while (i < argc) {
+        stringstream ss(argv[i]);
+        string img_name;
+        while (getline(ss, img_name, '/')) {
+        };
+        lib.loadpicture(argv[i], img_name);
+        i++;
+    }
 
     while (true) {
         cout << "\n> ";
