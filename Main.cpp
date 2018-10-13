@@ -70,16 +70,39 @@ int main(int argc, char **argv) {
                 lib.invert(arg);
                 break;
             case 7 :
-                 arguments >> arg;
-                 lib.grayscale(arg);
+                arguments >> arg;
+                lib.grayscale(arg);
                 break;
-            case 8 :;
+            case 8 :
+                arguments >> arg;
+                arguments >> arg2;
+                if (arg == "90") {
+                    lib.rotate(90, arg2);
+                } else if (arg == "180") {
+                    lib.rotate(180, arg2);
+                } else if (arg == "270") {
+                    lib.rotate(270, arg2);
+                } else {
+                    cout << "Error : Invalid angle of rotation" << endl;
+                }
                 break;
-            case 9 :;
+            case 9 :
+                arguments >> arg;
+                arguments >> arg2;
+                if (arg == "H") {
+                    lib.flipVH('H', arg2);
+                } else if (arg == "V") {
+                    lib.flipVH('V', arg2);
+                } else {
+                    cout << "Error : Invalid plane specified" << endl;
+                }
                 break;
-            case 10 :;
+            case 10 :
+                arguments >> arg;
+                lib.blur(arg);
                 break;
             case 0 :
+                cout << "Now exiting interpreter" << endl;
                 return 0;
 
 

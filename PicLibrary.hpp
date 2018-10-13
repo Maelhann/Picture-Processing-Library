@@ -29,8 +29,10 @@ class PicLibrary {
   void invert(string filename);
   void grayscale(string filename);
   void rotate(int angle, string filename);
+  void rotateonce(string filename);
   void flipVH(char plane, string filename);
   void blur(string filename);
+  Colour getaveragecol(Picture pic, int x , int y);
 };
 
 #endif

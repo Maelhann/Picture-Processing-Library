@@ -81,6 +81,85 @@ void PicLibrary::grayscale(string filename) {
     setpicture(filename, pic);
 }
 
+void PicLibrary::rotate(int angle, string filename) {
+    switch (angle) {
+        case 90 :
+            rotateonce(filename);
+            break;
+        case 180 :
+            rotateonce(filename);
+            rotateonce(filename);
+            break;
+        case 270:
+            rotateonce(filename);
+            rotateonce(filename);
+            rotateonce(filename);
+            break;
+        default:
+            cout << "Error :  Invalid angle" << endl;
+            break;
+    }
+}
+
+void PicLibrary::rotateonce(string filename) {
+    Picture pic = getpicture(filename);
+    Picture cont = Picture(pic.getheight(), pic.getwidth());
+    for (int x = 0; x < cont.getwidth(); x++) {
+        for (int y = 0; y < cont.getheight(); y++) {
+            cont.setpixel(pic.getheight() - 1 - x, y, pic.getpixel(y, x));
+        }
+    }
+    setpicture(filename, cont);
+}
+
+void PicLibrary::flipVH(char plane, string filename) {
+    Picture pic = getpicture(filename);
+    Picture cont = Picture(pic.getwidth(), pic.getheight());
+    if (plane == 'H') {
+        for (int x = 0; x < cont.getwidth(); x++) {
+            for (int y = 0; y < cont.getheight(); y++) {
+                cont.setpixel(cont.getwidth() - x - 1, y, pic.getpixel(x, y));
+            }
+        }
+    } else {
+        for (int x = 0; x < cont.getwidth(); x++) {
+            for (int y = 0; y < cont.getheight(); y++) {
+                cont.setpixel(x, cont.getheight() - 1 - y, pic.getpixel(x, y));
+            }
+        }
+    }
+    setpicture(filename, cont);
+}
+
+void PicLibrary::blur(string filename) {
+    Picture pic = getpicture(filename);
+    for (int x = 1; x < pic.getwidth() - 1; x++) {
+        for (int y = 1; y < pic.getheight() - 1; y++) {
+            pic.setpixel(x, y, getaveragecol(pic, x, y));
+        }
+    }
+    setpicture(filename, pic);
+
+}
+
+Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
+    Colour avg = Colour(0, 0, 0);
+    int rval = 0;
+    int bval = 0;
+    int gval = 0;
+    for (int i = x - 1; i < x + 2; i++) {
+        for (int j = y - 1; j < y + 2; j++) {
+            rval += pic.getpixel(i, j).getred();
+            bval += pic.getpixel(i, j).getblue();
+            gval += pic.getpixel(i, j).getgreen();
+        }
+    }
+    avg.setred(rval / 9);
+    avg.setblue(bval / 9);
+    avg.setgreen(gval / 9);
+    return avg;
+}
+
 
  
 
