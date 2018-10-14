@@ -1,7 +1,7 @@
 #include "PicLibrary.hpp"
 #include "Colour.hpp"
 #include "Utils.hpp"
-#include <thread>
+
 
 using namespace std;
 
@@ -168,48 +168,52 @@ Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
 }
 
 void PicLibrary::concurrentinvert(string filename) {
-    thread t2([this, filename]() {
+    active_threads.emplace_back(std::thread([this, filename]() {
         lock.lock();
         invert(filename);
         lock.unlock();
-    });
-    t2.join();
+    }));
 }
 
 void PicLibrary::concurrentgrayscale(string filename) {
-    thread t2([this, filename]() {
+    active_threads.emplace_back(std::thread([this, filename]() {
         lock.lock();
         grayscale(filename);
         lock.unlock();
-    });
-    t2.join();
+    }));
 }
 
 void PicLibrary::concurrentrotate(int angle, string filename) {
-    thread t2([this, angle, filename]() {
+    active_threads.emplace_back(std::thread([this, angle, filename]() {
         lock.lock();
         rotate(angle, filename);
         lock.unlock();
-    });
-    t2.join();
+    }));
 }
 
 void PicLibrary::concurrentflip(char dir, string filename) {
-    thread t2([this, dir, filename]() {
+    active_threads.emplace_back(std::thread([this, dir, filename]() {
         lock.lock();
-        flipVH(dir, filename);
+        rotate(dir, filename);
         lock.unlock();
-    });
-    t2.join();
+    }));
 }
 
 void PicLibrary::concurrentblur(string filename) {
-    thread t2([this, filename]() {
+    active_threads.emplace_back(std::thread([this, filename]() {
         lock.lock();
         blur(filename);
         lock.unlock();
-    });
-    t2.join();
+    }));
+
+}
+
+void PicLibrary::jointhreads() {
+    for (thread &th : active_threads) {
+        if (th.joinable()) {
+            th.join();
+        }
+    }
 
 }
 

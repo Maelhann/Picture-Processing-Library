@@ -4,6 +4,7 @@
 #include "Picture.hpp"
 #include "Utils.hpp"
 #include <mutex>
+#include <thread>
 
 class PicLibrary {
 
@@ -12,6 +13,8 @@ private:
 
     map<string, Picture> store;
     mutex lock ;
+    vector<thread> active_threads;
+
 
 
 public:
@@ -62,6 +65,7 @@ public:
 
     void concurrentblur(string filename);
 
+    void jointhreads();
 
 };
 
