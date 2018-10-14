@@ -6,7 +6,7 @@ using namespace std;
 
 void PicLibrary::loadpicture(string path, string filename) {
     Utils util;
-    Picture picture;
+    Picture picture = Picture(path);
     picture.setimage(util.loadimage(path));
     PicLibrary::store.insert(pair<string, Picture>(filename, picture));
 }
@@ -38,7 +38,7 @@ void PicLibrary::unloadpicture(string filename) {
 
 void PicLibrary::print_picturestore() {
     for (auto cursor = PicLibrary::store.begin(); cursor != PicLibrary::store.end(); ++cursor) {
-        cout << cursor->first;
+        cout << endl << cursor->first;
     }
 }
 

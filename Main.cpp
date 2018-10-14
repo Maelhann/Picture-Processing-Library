@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
     }
 
     while (true) {
-        cout << "\n> ";
+        cout << endl << "> ";
         string command;
         getline(cin, command);
         string arg;
