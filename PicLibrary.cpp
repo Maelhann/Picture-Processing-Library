@@ -194,7 +194,7 @@ void PicLibrary::concurrentrotate(int angle, string filename) {
 void PicLibrary::concurrentflip(char dir, string filename) {
     active_threads.emplace_back(std::thread([this, dir, filename]() {
         lock.lock();
-        rotate(dir, filename);
+        flipVH(dir, filename);
         lock.unlock();
     }));
 }
