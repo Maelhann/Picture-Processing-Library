@@ -133,7 +133,8 @@ void PicLibrary::flipVH(char plane, string filename) {
 
 void PicLibrary::blur(string filename) {
     Picture pic = getpicture(filename);
-    Picture cont =  pic;  // Picture(pic.getwidth(), pic.getheight());
+    Picture cont = Picture(pic.getwidth(), pic.getheight());
+    cont.setimage(pic.getimage());
 
     for (int x = 1; x < pic.getwidth() - 1; x++) {
         for (int y = 1; y < pic.getheight() - 1; y++) {
