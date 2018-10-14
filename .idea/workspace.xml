@@ -13,6 +13,9 @@
   <component name="ChangeListManager">
     <list default="true" id="b4e619fd-1766-4204-87f3-555f5a41ea13" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.nfs00000002043d000f00002324" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main.o" beforeDir="false" afterPath="$PROJECT_DIR$/Main.o" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PicLibrary.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/PicLibrary.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PicLibrary.o" beforeDir="false" afterPath="$PROJECT_DIR$/PicLibrary.o" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/picture_lib" beforeDir="false" afterPath="$PROJECT_DIR$/picture_lib" afterDir="false" />
@@ -48,24 +51,24 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="cpp" value="4466" />
+          <entry key="cpp" value="4620" />
           <entry key="hpp" value="270" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="ObjectiveC" value="4736" />
+          <entry key="ObjectiveC" value="4890" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-300">
-              <caret line="35" column="10" lean-forward="true" selection-start-line="35" selection-start-column="10" selection-end-line="35" selection-end-column="10" />
+            <state relative-caret-position="495">
+              <caret line="46" column="36" lean-forward="true" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="36" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -94,11 +97,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PicLibrary.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="465">
-              <caret line="142" column="5" lean-forward="true" selection-start-line="142" selection-start-column="5" selection-end-line="142" selection-end-column="5" />
+            <state relative-caret-position="759">
+              <caret line="98" selection-start-line="98" selection-end-line="98" />
               <folding>
                 <element signature="e#0#25#0" expanded="true" />
               </folding>
@@ -139,8 +142,8 @@
       <list>
         <option value="$PROJECT_DIR$/PicLibrary.hpp" />
         <option value="$PROJECT_DIR$/Utils.cpp" />
-        <option value="$PROJECT_DIR$/Main.cpp" />
         <option value="$PROJECT_DIR$/PicLibrary.cpp" />
+        <option value="$PROJECT_DIR$/Main.cpp" />
       </list>
     </option>
   </component>
@@ -220,12 +223,12 @@
       <updated>1539350768494</updated>
       <workItem from="1539350771490" duration="8364000" />
       <workItem from="1539424040990" duration="7054000" />
-      <workItem from="1539524539017" duration="2518000" />
+      <workItem from="1539524539017" duration="3357000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="17936000" />
+    <option name="totallyTimeSpent" value="18775000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="808" y="56" width="1094" height="1000" extended-state="0" />
@@ -284,6 +287,13 @@
     <entry file="file://$PROJECT_DIR$/Colour.cpp">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/Picture.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="429">
+          <caret line="32" column="73" selection-start-line="32" selection-start-column="73" selection-end-line="32" selection-end-column="73" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Utils.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -294,29 +304,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Main.cpp">
+    <entry file="file://$PROJECT_DIR$/PicLibrary.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-300">
-          <caret line="35" column="10" lean-forward="true" selection-start-line="35" selection-start-column="10" selection-end-line="35" selection-end-column="10" />
+        <state relative-caret-position="759">
+          <caret line="98" selection-start-line="98" selection-end-line="98" />
           <folding>
-            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#0#25#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Picture.cpp">
+    <entry file="file://$PROJECT_DIR$/Main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="429">
-          <caret line="32" column="73" selection-start-line="32" selection-start-column="73" selection-end-line="32" selection-end-column="73" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PicLibrary.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="142" column="5" lean-forward="true" selection-start-line="142" selection-start-column="5" selection-end-line="142" selection-end-column="5" />
+        <state relative-caret-position="495">
+          <caret line="46" column="36" lean-forward="true" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="36" />
           <folding>
-            <element signature="e#0#25#0" expanded="true" />
+            <element signature="e#0#19#0" expanded="true" />
           </folding>
         </state>
       </provider>

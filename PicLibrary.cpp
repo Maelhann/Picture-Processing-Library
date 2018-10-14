@@ -5,17 +5,14 @@
 using namespace std;
 
 void PicLibrary::loadpicture(string path, string filename) {
-    Utils util;
     Picture picture = Picture(path);
-    picture.setimage(util.loadimage(path));
     PicLibrary::store.insert(pair<string, Picture>(filename, picture));
 }
 
 Picture PicLibrary::getpicture(string filename) {
     auto picture_iter = store.find(filename);
-    Utils utils;
     if (picture_iter == store.end()) {
-        cout << "\n Error : Couldn't find picture with matching filename" << endl;
+        cout << endl << " Error : Couldn't find picture with matching filename" << endl;
         return Picture();
     } else {
         return picture_iter->second;
@@ -24,7 +21,6 @@ Picture PicLibrary::getpicture(string filename) {
 
 void PicLibrary::setpicture(string filename, Picture picture) {
     auto picture_iter = store.find(filename);
-    Utils utils;
     if (picture_iter == store.end()) {
         PicLibrary::store.insert(pair<string, Picture>(filename, picture));
     } else {

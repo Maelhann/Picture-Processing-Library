@@ -30,10 +30,8 @@ int main(int argc, char **argv) {
     int i = 1;
 
     while (i < argc) {
-        stringstream ss(argv[i]);
-        string img_name;
-        while (getline(ss, img_name, '/')) {
-        };
+        string img_name = ((string) argv[i]).
+                substr(((string) argv[i]).find_last_of('/'));
         lib.loadpicture(argv[i], img_name);
         i++;
     }
