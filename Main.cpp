@@ -8,11 +8,13 @@
 #include "Picture.hpp"
 #include "PicLibrary.hpp"
 
+
 using namespace std;
 
 
 int main(int argc, char **argv) {
     map<string, int> commands_to_integers;
+
     commands_to_integers.insert(pair<string, int>("exit", 0));
     commands_to_integers.insert(pair<string, int>("liststore", 1));
     commands_to_integers.insert(pair<string, int>("load", 2));
@@ -24,9 +26,11 @@ int main(int argc, char **argv) {
     commands_to_integers.insert(pair<string, int>("rotate", 8));
     commands_to_integers.insert(pair<string, int>("flip", 9));
     commands_to_integers.insert(pair<string, int>("blur", 10));
+
     PicLibrary lib;
     Picture picture;
     Mat image = Mat();
+
     int i = 1;
 
     while (i < argc) {
@@ -44,6 +48,8 @@ int main(int argc, char **argv) {
         string arg2;
         stringstream arguments(command);
         arguments >> arg;
+
+
         auto iter = commands_to_integers.find(arg);
         int command_index = 0;
         if (iter != commands_to_integers.end()) {
@@ -51,6 +57,7 @@ int main(int argc, char **argv) {
         } else {
             cout << "Error : input command malformed or inexisting";
         }
+
         switch (command_index) {
             case 1 :
                 lib.print_picturestore();
@@ -75,21 +82,21 @@ int main(int argc, char **argv) {
                 break;
             case 6 :
                 arguments >> arg;
-                lib.invert(arg);
+                lib.concurrentinvert(arg);
                 break;
             case 7 :
                 arguments >> arg;
-                lib.grayscale(arg);
+                lib.concurrentgrayscale(arg);
                 break;
             case 8 :
                 arguments >> arg;
                 arguments >> arg2;
                 if (arg == "90") {
-                    lib.rotate(90, arg2);
+                    lib.concurrentrotate(90, arg2);
                 } else if (arg == "180") {
-                    lib.rotate(180, arg2);
+                    lib.concurrentrotate(180, arg2);
                 } else if (arg == "270") {
-                    lib.rotate(270, arg2);
+                    lib.concurrentrotate(270, arg2);
                 } else {
                     cout << "Error : Invalid angle of rotation" << endl;
                 }
@@ -98,16 +105,16 @@ int main(int argc, char **argv) {
                 arguments >> arg;
                 arguments >> arg2;
                 if (arg == "H") {
-                    lib.flipVH('H', arg2);
+                    lib.concurrentflip('H', arg2);
                 } else if (arg == "V") {
-                    lib.flipVH('V', arg2);
+                    lib.concurrentflip('V', arg2);
                 } else {
                     cout << "Error : Invalid plane specified" << endl;
                 }
                 break;
             case 10 :
                 arguments >> arg;
-                lib.blur(arg);
+                lib.concurrentblur(arg);
                 break;
             case 0 :
                 cout << "Now exiting interpreter" << endl;
@@ -115,6 +122,7 @@ int main(int argc, char **argv) {
 
 
         }
+
     }
 
 

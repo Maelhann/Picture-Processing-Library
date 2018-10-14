@@ -1,13 +1,17 @@
 #include "PicLibrary.hpp"
 #include "Colour.hpp"
 #include "Utils.hpp"
+#include <thread>
 
 using namespace std;
 
+//idea : map each filename to a thread. each thread is dedicated to its' picture.
+
 void PicLibrary::loadpicture(string path, string filename) {
     Picture picture = Picture(path);
-    PicLibrary::store.insert(pair<string, Picture>(filename, picture));
+    store.insert(pair<string, Picture>(filename, picture));
 }
+
 
 Picture PicLibrary::getpicture(string filename) {
     auto picture_iter = store.find(filename);
@@ -18,6 +22,7 @@ Picture PicLibrary::getpicture(string filename) {
         return picture_iter->second;
     }
 }
+
 
 void PicLibrary::setpicture(string filename, Picture picture) {
     auto picture_iter = store.find(filename);
@@ -61,6 +66,7 @@ void PicLibrary::invert(string filename) {
     }
     setpicture(filename, pic);
 }
+
 
 void PicLibrary::grayscale(string filename) {
     Picture pic = getpicture(filename);
@@ -161,6 +167,51 @@ Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
     return avg;
 }
 
+void PicLibrary::concurrentinvert(string filename) {
+    thread t2([this, filename]() {
+        lock.lock();
+        invert(filename);
+        lock.unlock();
+    });
+    t2.join();
+}
+
+void PicLibrary::concurrentgrayscale(string filename) {
+    thread t2([this, filename]() {
+        lock.lock();
+        grayscale(filename);
+        lock.unlock();
+    });
+    t2.join();
+}
+
+void PicLibrary::concurrentrotate(int angle, string filename) {
+    thread t2([this, angle, filename]() {
+        lock.lock();
+        rotate(angle, filename);
+        lock.unlock();
+    });
+    t2.join();
+}
+
+void PicLibrary::concurrentflip(char dir, string filename) {
+    thread t2([this, dir, filename]() {
+        lock.lock();
+        flipVH(dir, filename);
+        lock.unlock();
+    });
+    t2.join();
+}
+
+void PicLibrary::concurrentblur(string filename) {
+    thread t2([this, filename]() {
+        lock.lock();
+        blur(filename);
+        lock.unlock();
+    });
+    t2.join();
+
+}
 
  
 
