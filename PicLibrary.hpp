@@ -12,9 +12,8 @@ class PicLibrary {
 private:
 
     map<string, Picture> store;
-    mutex lock ;
+    mutex lock;
     vector<thread> active_threads;
-
 
 
 public:
@@ -65,7 +64,10 @@ public:
 
     void concurrentblur(string filename);
 
+    void concurrentload(string path, string filename);
+
     void jointhreads();
+
 
 };
 

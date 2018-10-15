@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
     while (i < argc) {
         string img_name = ((string) argv[i]).
                 substr(((string) argv[i]).find_last_of('/') + 1);
-        lib.loadpicture(argv[i], img_name);
+        lib.concurrentload(argv[i], img_name);
         i++;
     }
 
@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
             case 2 :
                 arguments >> arg;
                 arguments >> arg2;
-                lib.loadpicture(arg, arg2);
+                lib.concurrentload(arg, arg2);
                 break;
             case 3 :
                 arguments >> arg;
@@ -122,6 +122,7 @@ int main(int argc, char **argv) {
             case 11:
                 if (arg == "") {
                     cout << endl << "No input" << arg << endl;
+                    break;
                 } else {
                     cout << endl << "Invalid command : " << arg << endl;
                 }
