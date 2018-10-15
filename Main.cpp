@@ -16,6 +16,7 @@ int main(int argc, char **argv) {
     map<string, int> commands_to_integers;
 
     commands_to_integers.insert(pair<string, int>("exit", 0));
+    commands_to_integers.insert(pair<string, int>("", 0));
     commands_to_integers.insert(pair<string, int>("liststore", 1));
     commands_to_integers.insert(pair<string, int>("load", 2));
     commands_to_integers.insert(pair<string, int>("unload", 3));
@@ -48,7 +49,6 @@ int main(int argc, char **argv) {
         string arg2;
         stringstream arguments(command);
         arguments >> arg;
-
         auto iter = commands_to_integers.find(arg);
         int command_index = 0;
         if (iter != commands_to_integers.end()) {

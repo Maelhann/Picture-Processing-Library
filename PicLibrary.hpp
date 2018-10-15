@@ -68,6 +68,10 @@ public:
 
     void concurrentsave(string filename, string path);
 
+    void concurrentunload(string filename);
+
+    void concurrentdisplay(string filename);
+
     void jointhreads();
 
 
