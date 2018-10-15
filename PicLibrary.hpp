@@ -64,14 +64,6 @@ public:
 
     void concurrentblur(string filename);
 
-    void concurrentload(string path, string filename);
-
-    void concurrentunload(string filename);
-
-    void concurrentsave(string filename, string path);
-
-    void concurrentdisplay(string filename);
-
 
     void jointhreads();
 

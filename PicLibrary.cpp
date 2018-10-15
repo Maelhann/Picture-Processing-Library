@@ -209,42 +209,6 @@ void PicLibrary::concurrentblur(string filename) {
 
 }
 
-void PicLibrary::concurrentload(string path, string filename) {
-    active_threads.emplace_back(std::thread([this, path, filename]() {
-        lock.lock();
-        loadpicture(path, filename);
-        lock.unlock();
-    }));
-}
-
-void PicLibrary::concurrentsave(string path, string filename) {
-    active_threads.emplace_back(std::thread([this, path, filename]() {
-        lock.lock();
-        savepicture(path, filename);
-        lock.unlock();
-    }));
-
-}
-
-
-void PicLibrary::concurrentunload(string filename) {
-    active_threads.emplace_back(std::thread([this, filename]() {
-        lock.lock();
-        unloadpicture(filename);
-        lock.unlock();
-    }));
-
-}
-
-
-void PicLibrary::concurrentdisplay(string filename) {
-    active_threads.emplace_back(std::thread([this, filename]() {
-        lock.lock();
-        display(filename);
-        lock.unlock();
-    }));
-
-}
 
 
 void PicLibrary::jointhreads() {

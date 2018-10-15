@@ -65,20 +65,20 @@ int main(int argc, char **argv) {
                 case 2 :
                     arguments >> arg;
                     arguments >> arg2;
-                    lib.concurrentload(arg, arg2);
+                    lib.loadpicture(arg, arg2);
                     break;
                 case 3 :
                     arguments >> arg;
-                    lib.concurrentunload(arg);
+                    lib.unloadpicture(arg);
                     break;
                 case 4 :
                     arguments >> arg;
                     arguments >> arg2;
-                    lib.concurrentsave(arg, arg2);
+                    lib.savepicture(arg, arg2);
                     break;
                 case 5 :
                     arguments >> arg;
-                    lib.concurrentdisplay(arg);
+                    lib.display(arg);
                     break;
                 case 6 :
                     arguments >> arg;
