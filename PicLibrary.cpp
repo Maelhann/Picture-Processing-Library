@@ -144,7 +144,6 @@ void PicLibrary::blur(string filename) {
         }
     }
 
-
     setpicture(filename, cont);
 
 }

@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
         if (iter != commands_to_integers.end()) {
             command_index = iter->second;
         } else {
-            cout << "Error : input command malformed or inexisting";
+            command_index = 11;
         }
 
         switch (command_index) {
@@ -119,6 +119,13 @@ int main(int argc, char **argv) {
             case 0 :
                 cout << "Now exiting interpreter" << endl;
                 return 0;
+            case 11:
+                if (arg == "") {
+                    cout << endl << "No input" << arg << endl;
+                } else {
+                    cout << endl << "Invalid command : " << arg << endl;
+                }
+                break;
 
 
         }
