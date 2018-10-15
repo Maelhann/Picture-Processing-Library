@@ -5,7 +5,7 @@
 
 using namespace std;
 
-//idea : map each filename to a thread. each thread is dedicated to its' picture.
+//idea : map each filename to a thread . each thread is dedicated to its' picture.
 
 void PicLibrary::loadpicture(string path, string filename) {
     Picture picture = Picture(path);
@@ -38,9 +38,11 @@ void PicLibrary::unloadpicture(string filename) {
 }
 
 void PicLibrary::print_picturestore() {
+    lock.try_lock();
     for (auto cursor = PicLibrary::store.begin(); cursor != PicLibrary::store.end(); ++cursor) {
         cout << endl << cursor->first;
     }
+    lock.unlock();
 }
 
 void PicLibrary::savepicture(string filename, string path) {
@@ -224,10 +226,32 @@ void PicLibrary::concurrentsave(string path, string filename) {
 
 }
 
+
+void PicLibrary::concurrentunload(string filename) {
+    active_threads.emplace_back(std::thread([this, filename]() {
+        lock.lock();
+        unloadpicture(filename);
+        lock.unlock();
+    }));
+
+}
+
+
+void PicLibrary::concurrentdisplay(string filename) {
+    active_threads.emplace_back(std::thread([this, filename]() {
+        lock.lock();
+        display(filename);
+        lock.unlock();
+    }));
+
+}
+
+
 void PicLibrary::jointhreads() {
     for (thread &th : active_threads) {
         if (th.joinable()) {
             th.join();
+            delete (&th);
         }
     }
 

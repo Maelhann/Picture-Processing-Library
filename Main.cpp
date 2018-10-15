@@ -69,16 +69,16 @@ int main(int argc, char **argv) {
                     break;
                 case 3 :
                     arguments >> arg;
-                    lib.unloadpicture(arg);
+                    lib.concurrentunload(arg);
                     break;
                 case 4 :
                     arguments >> arg;
                     arguments >> arg2;
-                    lib.savepicture(arg, arg2);
+                    lib.concurrentsave(arg, arg2);
                     break;
                 case 5 :
                     arguments >> arg;
-                    lib.display(arg);
+                    lib.concurrentdisplay(arg);
                     break;
                 case 6 :
                     arguments >> arg;
