@@ -14,9 +14,8 @@ using namespace std;
 
 int main(int argc, char **argv) {
     map<string, int> commands_to_integers;
-
     commands_to_integers.insert(pair<string, int>("exit", 0));
-    commands_to_integers.insert(pair<string, int>("", 0));
+    commands_to_integers.insert(pair<string, int>("\n", 0));
     commands_to_integers.insert(pair<string, int>("liststore", 1));
     commands_to_integers.insert(pair<string, int>("load", 2));
     commands_to_integers.insert(pair<string, int>("unload", 3));
@@ -44,87 +43,90 @@ int main(int argc, char **argv) {
     while (true) {
         cout << endl << "> ";
         string command;
-        getline(cin, command);
-        string arg;
-        string arg2;
-        stringstream arguments(command);
-        arguments >> arg;
-        auto iter = commands_to_integers.find(arg);
-        int command_index = 0;
-        if (iter != commands_to_integers.end()) {
-            command_index = iter->second;
+        if (!cin.eof()) {
+            getline(cin, command);
+            string arg;
+            string arg2;
+            stringstream arguments(command);
+            arguments >> arg;
+            auto iter = commands_to_integers.find(arg);
+            int command_index = 0;
+            if (iter != commands_to_integers.end()) {
+                command_index = iter->second;
+            } else {
+                cout << "Invalid or malformed command" << endl;
+                continue;
+            }
+
+            switch (command_index) {
+                case 1 :
+                    lib.print_picturestore();
+                    break;
+                case 2 :
+                    arguments >> arg;
+                    arguments >> arg2;
+                    lib.concurrentload(arg, arg2);
+                    break;
+                case 3 :
+                    arguments >> arg;
+                    lib.unloadpicture(arg);
+                    break;
+                case 4 :
+                    arguments >> arg;
+                    arguments >> arg2;
+                    lib.savepicture(arg, arg2);
+                    break;
+                case 5 :
+                    arguments >> arg;
+                    lib.display(arg);
+                    break;
+                case 6 :
+                    arguments >> arg;
+                    lib.concurrentinvert(arg);
+                    break;
+                case 7 :
+                    arguments >> arg;
+                    lib.concurrentgrayscale(arg);
+                    break;
+                case 8 :
+                    arguments >> arg;
+                    arguments >> arg2;
+                    if (arg == "90") {
+                        lib.concurrentrotate(90, arg2);
+                    } else if (arg == "180") {
+                        lib.concurrentrotate(180, arg2);
+                    } else if (arg == "270") {
+                        lib.concurrentrotate(270, arg2);
+                    } else {
+                        cout << "Error : Invalid angle of rotation" << endl;
+                    }
+                    break;
+                case 9 :
+                    arguments >> arg;
+                    arguments >> arg2;
+                    if (arg == "H") {
+                        lib.concurrentflip('H', arg2);
+                    } else if (arg == "V") {
+                        lib.concurrentflip('V', arg2);
+                    } else {
+                        cout << "Error : Invalid plane specified" << endl;
+                    }
+                    break;
+                case 10 :
+                    arguments >> arg;
+                    lib.concurrentblur(arg);
+                    break;
+                case 0 :
+                    cout << "Now exiting interpreter" << endl;
+                    return 0;
+
+            }
+            lib.jointhreads();
         } else {
-            cout << "Invalid or malformed command" << endl;
-            continue;
+            return 0;
         }
 
-        switch (command_index) {
-            case 1 :
-                lib.print_picturestore();
-                break;
-            case 2 :
-                arguments >> arg;
-                arguments >> arg2;
-                lib.concurrentload(arg, arg2);
-                break;
-            case 3 :
-                arguments >> arg;
-                lib.unloadpicture(arg);
-                break;
-            case 4 :
-                arguments >> arg;
-                arguments >> arg2;
-                lib.savepicture(arg, arg2);
-                break;
-            case 5 :
-                arguments >> arg;
-                lib.display(arg);
-                break;
-            case 6 :
-                arguments >> arg;
-                lib.concurrentinvert(arg);
-                break;
-            case 7 :
-                arguments >> arg;
-                lib.concurrentgrayscale(arg);
-                break;
-            case 8 :
-                arguments >> arg;
-                arguments >> arg2;
-                if (arg == "90") {
-                    lib.concurrentrotate(90, arg2);
-                } else if (arg == "180") {
-                    lib.concurrentrotate(180, arg2);
-                } else if (arg == "270") {
-                    lib.concurrentrotate(270, arg2);
-                } else {
-                    cout << "Error : Invalid angle of rotation" << endl;
-                }
-                break;
-            case 9 :
-                arguments >> arg;
-                arguments >> arg2;
-                if (arg == "H") {
-                    lib.concurrentflip('H', arg2);
-                } else if (arg == "V") {
-                    lib.concurrentflip('V', arg2);
-                } else {
-                    cout << "Error : Invalid plane specified" << endl;
-                }
-                break;
-            case 10 :
-                arguments >> arg;
-                lib.concurrentblur(arg);
-                break;
-            case 0 :
-                cout << "Now exiting interpreter" << endl;
-                return 0;
-
-        }
-        lib.jointhreads();
     }
-
-
 }
 
 
