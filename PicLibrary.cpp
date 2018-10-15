@@ -215,7 +215,7 @@ void PicLibrary::jointhreads() {
     for (thread &th : active_threads) {
         if (th.joinable()) {
             th.join();
-            delete (&th);
+           // delete (&th);
         }
     }
 
