@@ -215,6 +215,15 @@ void PicLibrary::concurrentload(string path, string filename) {
     }));
 }
 
+void PicLibrary::concurrentsave(string path, string filename) {
+    active_threads.emplace_back(std::thread([this, path, filename]() {
+        lock.lock();
+        savepicture(path, filename);
+        lock.unlock();
+    }));
+
+}
+
 void PicLibrary::jointhreads() {
     for (thread &th : active_threads) {
         if (th.joinable()) {
