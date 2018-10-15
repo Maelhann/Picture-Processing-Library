@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
     while (i < argc) {
         string img_name = ((string) argv[i]).
                 substr(((string) argv[i]).find_last_of('/') + 1);
-        lib.concurrentload(argv[i], img_name);
+        lib.loadpicture(argv[i], img_name);
         i++;
     }
 

@@ -38,11 +38,11 @@ void PicLibrary::unloadpicture(string filename) {
 }
 
 void PicLibrary::print_picturestore() {
-    lock.try_lock();
+
     for (auto cursor = PicLibrary::store.begin(); cursor != PicLibrary::store.end(); ++cursor) {
         cout << endl << cursor->first;
     }
-    lock.unlock();
+
 }
 
 void PicLibrary::savepicture(string filename, string path) {
@@ -210,12 +210,11 @@ void PicLibrary::concurrentblur(string filename) {
 }
 
 
-
 void PicLibrary::jointhreads() {
     for (thread &th : active_threads) {
         if (th.joinable()) {
             th.join();
-           // delete (&th);
+            // delete (&th);
         }
     }
 
