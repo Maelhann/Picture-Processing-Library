@@ -49,13 +49,13 @@ int main(int argc, char **argv) {
         stringstream arguments(command);
         arguments >> arg;
 
-
         auto iter = commands_to_integers.find(arg);
         int command_index = 0;
         if (iter != commands_to_integers.end()) {
             command_index = iter->second;
         } else {
-            command_index = 11;
+            cout << "Invalid or malformed command" << endl;
+            continue;
         }
 
         switch (command_index) {
@@ -119,15 +119,6 @@ int main(int argc, char **argv) {
             case 0 :
                 cout << "Now exiting interpreter" << endl;
                 return 0;
-            case 11:
-                if (arg == "") {
-                    cout << endl << "No input" << arg << endl;
-                    break;
-                } else {
-                    cout << endl << "Invalid command : " << arg << endl;
-                }
-                break;
-
 
         }
         lib.jointhreads();
