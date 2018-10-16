@@ -162,29 +162,63 @@ void PicLibrary::blur(string filename) {
     for (thread &th : optimization_threads) {
         th.join();
     }
-
     setpicture(filename, cont);
 
 }
 
 Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
     Colour avg = Colour(0, 0, 0);
-    int rval = 0;
-    int bval = 0;
-    int gval = 0;
+    thread compute_red([this, &avg, pic, x, y]() {
+        avg.setred(getredvalue(pic, x, y));
+    });
 
-    for (int j = x - 1; j < x + 2; j++) {
-        for (int i = y - 1; i < y + 2; i++) {
-            rval += pic.getpixel(j, i).getred();
-            bval += pic.getpixel(j, i).getblue();
-            gval += pic.getpixel(j, i).getgreen();
-        }
+    thread compute_green([this, &avg, pic, x, y]() {
+        avg.setgreen(getgreenvalue(pic, x, y));
+    });
 
-    }
-    avg.setred(rval / 9);
-    avg.setblue(bval / 9);
-    avg.setgreen(gval / 9);
+    thread compute_blue([this, &avg, pic, x, y]() {
+        avg.setblue(getbluevalue(pic, x, y));
+    });
+
+
+    compute_red.join();
+    compute_green.join();
+    compute_blue.join();
     return avg;
+}
+
+int PicLibrary::getredvalue(Picture pic, int x, int y) {
+    int rval = 0;
+    for (int i = x - 1; i < x + 2; i++) {
+        for (int j = y - 1; j < y + 2; j++) {
+            rval += pic.getpixel(i, j).getred();
+
+        }
+    }
+    return rval / 9;
+
+}
+
+int PicLibrary::getgreenvalue(Picture pic, int x, int y) {
+    int gval = 0;
+    for (int i = x - 1; i < x + 2; i++) {
+        for (int j = y - 1; j < y + 2; j++) {
+            gval += pic.getpixel(i, j).getgreen();
+
+        }
+    }
+    return gval / 9;
+}
+
+int PicLibrary::getbluevalue(Picture pic, int x, int y) {
+    int bval = 0;
+    for (int i = x - 1; i < x + 2; i++) {
+        for (int j = y - 1; j < y + 2; j++) {
+            bval += pic.getpixel(i, j).getblue();
+
+        }
+    }
+    return bval / 9;
 }
 
 void PicLibrary::concurrentinvert(string filename) {

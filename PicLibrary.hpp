@@ -66,6 +66,13 @@ public:
 
     void jointhreads();
 
+    int getredvalue(Picture picture, int x, int y);
+
+    int getgreenvalue(Picture picture, int x, int y);
+
+    int getbluevalue(Picture picture, int x, int y);
+
+
 
 };
 
