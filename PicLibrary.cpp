@@ -151,14 +151,20 @@ void PicLibrary::flipVH(char plane, string filename) {
 void PicLibrary::blur(string filename) {
     Picture pic = getpicture(filename);
     Picture cont = Picture(pic.getwidth(), pic.getheight());
+    vector<thread> optimization_threads;
     cont.setimage(pic.getimage());
     for (int x = 1; x < pic.getwidth() - 1; x++) {
-        for (int y = 1; y < pic.getheight() - 1; y++) {
-            cont.setpixel(x, y, getaveragecol(pic, x, y));
-        }
-    }
+        optimization_threads.emplace_back(std::thread([this, x, &cont, &pic]() {
+            for (int y = 1; y < pic.getheight() - 1; y++) {
+                cont.setpixel(x, y, getaveragecol(pic, x, y));
+            }
+        }));
 
+    }
     setpicture(filename, cont);
+    for (thread &th : optimization_threads) {
+        th.join();
+    }
 
 }
 
@@ -218,7 +224,6 @@ void PicLibrary::concurrentblur(string filename) {
         blur(filename);
         lock.unlock();
     }));
-
 }
 
 
@@ -226,7 +231,7 @@ void PicLibrary::jointhreads() {
     for (thread &th : active_threads) {
         if (th.joinable()) {
             th.join();
-            // delete (&th);
+            delete (&th);
         }
     }
 
