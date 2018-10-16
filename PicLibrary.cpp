@@ -38,7 +38,6 @@ void PicLibrary::unloadpicture(string filename) {
 }
 
 void PicLibrary::print_picturestore() {
-
     for (auto cursor = PicLibrary::store.begin(); cursor != PicLibrary::store.end(); ++cursor) {
         cout << endl << cursor->first;
     }
@@ -55,34 +54,48 @@ void PicLibrary::display(string filename) {
     utils.displayimage(getpicture(filename).getimage());
 }
 
+
 void PicLibrary::invert(string filename) {
     Picture pic = getpicture(filename);
+    vector<thread> optimization_threads;
     for (int x = 0; x < pic.getwidth(); x++) {
-        for (int y = 0; y < pic.getheight(); y++) {
-            Colour newcolor = pic.getpixel(x, y);
-            newcolor.setblue(255 - newcolor.getblue());
-            newcolor.setgreen(255 - newcolor.getgreen());
-            newcolor.setred(255 - newcolor.getred());
-            pic.setpixel(x, y, newcolor);
-        }
+        optimization_threads.emplace_back(std::thread([&pic, x]() {
+            for (int y = 0; y < pic.getheight(); y++) {
+                Colour newcolor = pic.getpixel(x, y);
+                newcolor.setblue(255 - newcolor.getblue());
+                newcolor.setgreen(255 - newcolor.getgreen());
+                newcolor.setred(255 - newcolor.getred());
+                pic.setpixel(x, y, newcolor);
+            }
+        }));
     }
     setpicture(filename, pic);
+
+    for (thread &th : optimization_threads) {
+        th.join();
+    }
 }
 
 
 void PicLibrary::grayscale(string filename) {
     Picture pic = getpicture(filename);
+    vector<thread> optimization_threads;
     for (int x = 0; x < pic.getwidth(); x++) {
-        for (int y = 0; y < pic.getheight(); y++) {
-            Colour newcolor = pic.getpixel(x, y);
-            int graycolor = (newcolor.getred() + newcolor.getgreen() + newcolor.getblue()) / 3;
-            newcolor.setred(graycolor);
-            newcolor.setgreen(graycolor);
-            newcolor.setblue(graycolor);
-            pic.setpixel(x, y, newcolor);
-        }
+        optimization_threads.emplace_back(std::thread([&pic, x]() {
+            for (int y = 0; y < pic.getheight(); y++) {
+                Colour newcolor = pic.getpixel(x, y);
+                int graycolor = (newcolor.getred() + newcolor.getgreen() + newcolor.getblue()) / 3;
+                newcolor.setred(graycolor);
+                newcolor.setgreen(graycolor);
+                newcolor.setblue(graycolor);
+                pic.setpixel(x, y, newcolor);
+            }
+        }));
     }
     setpicture(filename, pic);
+    for (thread &th : optimization_threads) {
+        th.join();
+    }
 }
 
 void PicLibrary::rotate(int angle, string filename) {
@@ -139,7 +152,6 @@ void PicLibrary::blur(string filename) {
     Picture pic = getpicture(filename);
     Picture cont = Picture(pic.getwidth(), pic.getheight());
     cont.setimage(pic.getimage());
-
     for (int x = 1; x < pic.getwidth() - 1; x++) {
         for (int y = 1; y < pic.getheight() - 1; y++) {
             cont.setpixel(x, y, getaveragecol(pic, x, y));

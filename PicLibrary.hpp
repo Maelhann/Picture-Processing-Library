@@ -64,7 +64,6 @@ public:
 
     void concurrentblur(string filename);
 
-
     void jointhreads();
 
 
