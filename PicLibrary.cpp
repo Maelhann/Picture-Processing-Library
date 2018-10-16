@@ -173,19 +173,19 @@ Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
     int gval = 0;
     vector<thread> optimization_threads;
     for (int i = x - 1; i < x + 2; i++) {
-        optimization_threads.emplace_back(thread([i, y, &rval, &bval, &gval, &pic]() {
+       // optimization_threads.emplace_back(thread([i, y, &rval, &bval, &gval, &pic]() {
             for (int j = y - 1; j < y + 2; j++) {
                 rval += pic.getpixel(i, j).getred();
                 bval += pic.getpixel(i, j).getblue();
                 gval += pic.getpixel(i, j).getgreen();
             }
 
-        }));
-
+       // }));
     }
-    for (thread &th : optimization_threads) {
+    
+    /*for (thread &th : optimization_threads) {
         th.join();
-    }
+    }*/
 
     avg.setred(rval / 9);
     avg.setblue(bval / 9);
