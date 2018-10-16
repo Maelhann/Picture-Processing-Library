@@ -152,16 +152,17 @@ void PicLibrary::blur(string filename) {
     Picture cont = Picture(pic.getwidth(), pic.getheight());
     vector<thread> optimization_threads;
     cont.setimage(pic.getimage());
-    for (int x = 1; x < pic.getwidth() - 1; x++) {
+    for (int x = 1; x < pic.getheight() - 1; x++) {
         optimization_threads.emplace_back(std::thread([this, x, &pic, &cont]() {
-            for (int y = 1; y < pic.getheight() - 1; y++) {
-                cont.setpixel(x, y, getaveragecol(pic, x, y));
+            for (int y = 1; y < pic.getwidth() - 1; y++) {
+                cont.setpixel(y, x, getaveragecol(pic, y, x));
             }
         }));
     }
     for (thread &th : optimization_threads) {
         th.join();
     }
+
     setpicture(filename, cont);
 
 }
@@ -171,12 +172,14 @@ Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
     int rval = 0;
     int bval = 0;
     int gval = 0;
+
     for (int i = x - 1; i < x + 2; i++) {
         for (int j = y - 1; j < y + 2; j++) {
             rval += pic.getpixel(i, j).getred();
             bval += pic.getpixel(i, j).getblue();
             gval += pic.getpixel(i, j).getgreen();
         }
+
     }
     avg.setred(rval / 9);
     avg.setblue(bval / 9);
