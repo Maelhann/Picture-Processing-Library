@@ -70,7 +70,6 @@ void PicLibrary::invert(string filename) {
         }));
     }
     setpicture(filename, pic);
-
     for (thread &th : optimization_threads) {
         th.join();
     }
@@ -154,14 +153,15 @@ void PicLibrary::blur(string filename) {
     vector<thread> optimization_threads;
     cont.setimage(pic.getimage());
     for (int x = 1; x < pic.getwidth() - 1; x++) {
-        optimization_threads.emplace_back(std::thread([this, x, &cont, &pic]() {
-            for (int y = 1; y < pic.getheight() - 1; y++) {
-                cont.setpixel(x, y, getaveragecol(pic, x, y));
-            }
-        }));
+
+        for (int y = 1; y < pic.getheight() - 1; y++) {
+            cont.setpixel(x, y, getaveragecol(pic, x, y));
+        }
+        
 
     }
     setpicture(filename, cont);
+
     for (thread &th : optimization_threads) {
         th.join();
     }
