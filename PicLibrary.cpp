@@ -52,42 +52,33 @@ void PicLibrary::display(string filename) {
 
 void PicLibrary::invert(string filename) {
     Picture pic = getpicture(filename);
-    vector<thread> optimization_threads;
     for (int x = 0; x < pic.getwidth(); x++) {
-        optimization_threads.emplace_back(std::thread([&pic, x]() {
-            for (int y = 0; y < pic.getheight(); y++) {
-                Colour newcolor = pic.getpixel(x, y);
-                newcolor.setblue(255 - newcolor.getblue());
-                newcolor.setgreen(255 - newcolor.getgreen());
-                newcolor.setred(255 - newcolor.getred());
-                pic.setpixel(x, y, newcolor);
-            }
-        }));
+        for (int y = 0; y < pic.getheight(); y++) {
+            Colour newcolor = pic.getpixel(x, y);
+            newcolor.setblue(255 - newcolor.getblue());
+            newcolor.setgreen(255 - newcolor.getgreen());
+            newcolor.setred(255 - newcolor.getred());
+            pic.setpixel(x, y, newcolor);
+        }
+
     }
-    for (thread &th : optimization_threads) {
-        th.join();
-    }
+
     setpicture(filename, pic);
 }
 
 
 void PicLibrary::grayscale(string filename) {
     Picture pic = getpicture(filename);
-    vector<thread> optimization_threads;
     for (int x = 0; x < pic.getwidth(); x++) {
-        optimization_threads.emplace_back(std::thread([&pic, x]() {
-            for (int y = 0; y < pic.getheight(); y++) {
-                Colour newcolor = pic.getpixel(x, y);
-                int graycolor = (newcolor.getred() + newcolor.getgreen() + newcolor.getblue()) / 3;
-                newcolor.setred(graycolor);
-                newcolor.setgreen(graycolor);
-                newcolor.setblue(graycolor);
-                pic.setpixel(x, y, newcolor);
-            }
-        }));
-    }
-    for (thread &th : optimization_threads) {
-        th.join();
+        for (int y = 0; y < pic.getheight(); y++) {
+            Colour newcolor = pic.getpixel(x, y);
+            int graycolor = (newcolor.getred() + newcolor.getgreen() + newcolor.getblue()) / 3;
+            newcolor.setred(graycolor);
+            newcolor.setgreen(graycolor);
+            newcolor.setblue(graycolor);
+            pic.setpixel(x, y, newcolor);
+        }
+
     }
     setpicture(filename, pic);
 }
@@ -210,12 +201,12 @@ Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
     vector<thread> optimization_threads;
     for (int i = x - 1; i < x + 2; i++) {
 
-        rval += pic.getpixel(i, y - 1).getred() + pic.getpixel(i, y - 2).getred()
-                + pic.getpixel(i, y - 3).getred();
-        bval += pic.getpixel(i, y - 1).getblue() + pic.getpixel(i, y - 2).getblue()
-                + pic.getpixel(i, y - 3).getblue();
-        gval += pic.getpixel(i, y - 1).getgreen() + pic.getpixel(i, y - 2).getgreen()
-                + pic.getpixel(i, y - 3).getgreen();
+        rval += pic.getpixel(i, y - 1).getred() + pic.getpixel(i, y).getred()
+                + pic.getpixel(i, y + 1).getred();
+        bval += pic.getpixel(i, y - 1).getblue() + pic.getpixel(i, y).getblue()
+                + pic.getpixel(i, y + 1).getblue();
+        gval += pic.getpixel(i, y - 1).getgreen() + pic.getpixel(i, y).getgreen()
+                + pic.getpixel(i, y + 1).getgreen();
 
     }
 

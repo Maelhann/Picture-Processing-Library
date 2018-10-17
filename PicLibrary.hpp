@@ -8,17 +8,22 @@
 
 class PicLibrary {
 
+ /* THREAD-SAFETY OF THE PICLIBRARY CLASS :
+  *
+  * My Synchronization strategy was to use a mutex lock in order to make sure
+  *
+  * */
+
 
 private:
 
-    map <string, Picture> store;
+    map<string, Picture> store;
     mutex lock;
     vector<thread> active_threads;
 
 
 public:
     PicLibrary() {};
-
     ~PicLibrary() {};
 
     // command-line interpreter routines
@@ -52,7 +57,7 @@ public:
 
     Colour getaveragecol(Picture pic, int x, int y);
 
-    // function handling concurrent.
+    // functions handling concurrent transformations.
 
     void concurrentinvert(string filename);
 
@@ -65,8 +70,6 @@ public:
     void concurrentblur(string filename);
 
     void jointhreads();
-
-
 
 
 };
