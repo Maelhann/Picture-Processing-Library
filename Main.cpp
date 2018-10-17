@@ -30,11 +30,13 @@ int main(int argc, char **argv) {
     Picture picture;
     Mat image = Mat();
 
+
     for (int i = 1; i < argc; i++) {
         string img_name = ((string) argv[i]).
                 substr(((string) argv[i]).find_last_of('/') + 1);
         lib.loadpicture(argv[i], img_name);
     }
+
 
     while (true) {
         cout << endl << "> ";
@@ -60,20 +62,40 @@ int main(int argc, char **argv) {
                 case 2 :
                     arguments >> arg;
                     arguments >> arg2;
-                    lib.loadpicture(arg, arg2);
+                    if (arg.substr(arg.length() - 4) == ".jpg") {
+                        if (!lib.isinlibrary(arg2)) {
+                            lib.loadpicture(arg, arg2);
+                        } else {
+                            cout << "Error : file already loaded";
+                        }
+                    } else {
+                        cout << "Error : input is not a .jpg file";
+                    }
                     break;
                 case 3 :
                     arguments >> arg;
-                    lib.unloadpicture(arg);
+                    if (lib.isinlibrary(arg)) {
+                        lib.unloadpicture(arg);
+                    } else {
+                        cout << "Error : couldn't find any file with a matching name";
+                    }
                     break;
                 case 4 :
                     arguments >> arg;
                     arguments >> arg2;
-                    lib.savepicture(arg, arg2);
+                    if (lib.isinlibrary(arg)) {
+                        lib.savepicture(arg, arg2);
+                    } else {
+                        cout << "Error : couldn't find any file with a matching name";
+                    }
                     break;
                 case 5 :
                     arguments >> arg;
-                    lib.display(arg);
+                    if (lib.isinlibrary(arg)) {
+                        lib.display(arg);
+                    } else {
+                        cout << "Error : couldn't find any file with a matching name";
+                    }
                     break;
                 case 6 :
                     arguments >> arg;

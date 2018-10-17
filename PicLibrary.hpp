@@ -58,6 +58,8 @@ public:
     // command-line interpreter routines
     void print_picturestore();
 
+    bool isinlibrary(string filename);
+
     void loadpicture(string path, string filename);
 
     void unloadpicture(string filename);

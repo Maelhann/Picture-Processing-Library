@@ -10,14 +10,19 @@ void PicLibrary::loadpicture(string path, string filename) {
     store.insert(pair<string, Picture>(filename, picture));
 }
 
-Picture PicLibrary::getpicture(string filename) {
+bool PicLibrary::isinlibrary(string filename) {
     auto picture_iter = store.find(filename);
     if (picture_iter == store.end()) {
-        cout << endl << " Error : Couldn't find picture with matching filename" << endl;
-        return Picture();
+        return false;
     } else {
-        return picture_iter->second;
+        return true;
     }
+}
+
+Picture PicLibrary::getpicture(string filename) {
+    assert(isinlibrary(filename));
+    auto picture_iter = store.find(filename);
+    return picture_iter->second;
 }
 
 void PicLibrary::setpicture(string filename, Picture picture) {
