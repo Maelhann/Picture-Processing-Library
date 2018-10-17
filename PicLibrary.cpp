@@ -137,7 +137,7 @@ void PicLibrary::blur(string filename) {
     Picture pic = getpicture(filename);
     Picture cont = Picture(pic.getwidth(), pic.getheight());
     cont.setimage(pic.getimage());
-    if (pic.getheight() < pic.getwidth()) {
+    if (pic.getheight() > pic.getwidth()) {
         int quarter = pic.getwidth() / 4;
     thread first_quarter([quarter, &pic, &cont, this]() {
         vector<thread> optimization_threads1;

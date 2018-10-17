@@ -44,7 +44,7 @@ class PicLibrary {
      * and Line-By-Line, as all of the sections blur the columns of pixels concurrently.
      *
      * I also implemented a check, to make sure we maximize the parallelization of the picture processing,
-     * if there are more rows, than we compute concurrently row-by-row, otherwise we compute pixels column-by-column. 
+     * if there are more rows, than we compute concurrently row-by-row, otherwise we compute pixels column-by-column.
      *
      *
      * */
