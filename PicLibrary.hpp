@@ -5,6 +5,7 @@
 #include "Utils.hpp"
 #include <mutex>
 #include <thread>
+#include <map>
 
 class PicLibrary {
 
@@ -33,7 +34,7 @@ class PicLibrary {
      * OPTIMIZATION OF THE BLUR FUNCTION :
      *
      * I experimented and pushed multiple implementations for the blur() and getAverageCol() functions,
-     * I achieved the best performance when I split the image to blur in four square
+     * I achieved the best performance when I split the image to blur in four squares
      * 2d sections, and delegated the blurring
      * of each section to a thread.
      *
@@ -77,7 +78,7 @@ class PicLibrary {
 
 private:
 
-    map<string, Picture> store;
+    std::map<string, Picture> store;
     vector<thread> active_threads;
 
 
@@ -130,6 +131,11 @@ public:
     void concurrentflip(char direction, string filename);
 
     void concurrentblur(string filename);
+
+    void sequentialblur(string filename);
+
+    void pixelbypixelblur(string filename);
+
 
     void jointhreads();
 

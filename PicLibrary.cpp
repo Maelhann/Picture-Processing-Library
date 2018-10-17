@@ -136,7 +136,7 @@ void PicLibrary::flipVH(char plane, string filename) {
 }
 
 
-void PicLibrary::blur(string filename) {
+void PicLibrary::pixelbypixelblur(string filename) {
     Picture pic = getpicture(filename);
     Picture cont = Picture(pic.getwidth(), pic.getheight());
     int quarterheight = pic.getheight() / 2;
@@ -199,9 +199,44 @@ Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
     return avg;
 }
 
-/* PREVIOUS BLUR ATTEMPTS (SEE .HPP FOR OBSERVATIONS AND DETAILS)
+
+void PicLibrary::sequentialblur(string filename) {
+    Picture pic = getpicture(filename);
+    Picture cont = Picture(pic.getwidth(), pic.getheight());
+    cont.setimage(pic.getimage());
+    for (int x = 1; x < pic.getwidth() - 1; x++) {
+        for (int y = 1; y < pic.getheight() - 1; y++) {
+            cont.setpixel(x, y, getaveragecol(pic, x, y));
+        }
+    }
+    setpicture(filename, cont);
+}
+
+
+void PicLibrary::blur(string filename) {
+    Picture pic = getpicture(filename);
+    Picture cont = Picture(pic.getwidth(), pic.getheight());
+    cont.setimage(pic.getimage());
+    vector<thread> threads;
+    for (int x = 1; x < pic.getwidth() - 1; x++) {
+        for (int y = 1; y < pic.getheight() - 1; y++) {
+            threads.emplace_back(thread([&cont, &pic, x, y, this]() {
+                (cont.setpixel(x, y, getaveragecol(pic, x, y)));
+            }));
+        }
+    }
+    for (thread &th : threads) {
+        if (th.joinable()) {
+            th.join();
+        }
+    }
+    setpicture(filename, cont);
+}
+
+
+/* PREVIOUS BLUR ATTEMPTS
  *
- * OPTIMIZATION BY SPLITTING INTO SECTIONS OF LINE + LINE BY LINE OPTIMIZATION.
+ * OPTIMIZATION BY SPLITTING INTO SECTIONS OF 4 COLUMNS AND CONCURRENTLY COMPUTING ROW BY ROW
  *
  * void PicLibrary::blur(string filename) {
     Picture pic = getpicture(filename);
@@ -323,7 +358,7 @@ Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
 }
 
  *
- * OPTIMIZATION BY HALFING AND USING A SWITCH TO OPTIMIZE NUMBER OF THREADS CREATED
+ * OPTIMIZATION BY HALFING AND USING AN IFCHECK TO OPTIMIZE NUMBER OF THREADS CREATED (Large vs Small side)
  *
  *
 void PicLibrary::blur(string filename) {
@@ -384,7 +419,7 @@ void PicLibrary::blur(string filename) {
  }
 
  * LINE-BY-LINE OPTIMIZATION WITH AN IF CHECK TO OPTIMIZE NUMBER OF THREADS CREATED
- *
+ *  (we want to concurrently compute the rows or the columns depending on if there are more rows or columns.)
  *
  * void PicLibrary::blur(string filename) {
     Picture pic = getpicture(filename);
@@ -416,9 +451,6 @@ void PicLibrary::blur(string filename) {
     setpicture(filename, cont);
 
 }
-
-
-
  *
  * */
 
