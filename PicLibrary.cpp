@@ -138,79 +138,13 @@ void PicLibrary::blur(string filename) {
     Picture cont = Picture(pic.getwidth(), pic.getheight());
     cont.setimage(pic.getimage());
     if (pic.getheight() > pic.getwidth()) {
+       
         int quarter = pic.getwidth() / 4;
-    thread first_quarter([quarter, &pic, &cont, this]() {
-        vector<thread> optimization_threads1;
-        for (int x = 1; x < quarter; x++) {
-            optimization_threads1.emplace_back(std::thread([this, x, &pic, &cont]() {
-                for (int y = 1; y < pic.getheight() - 1; y++) {
-                    cont.setpixel(x, y, getaveragecol(pic, x, y));
-                }
-            }));
-        }
-        for (thread &th : optimization_threads1) {
-            if (th.joinable()) {
-                th.join();
-            }
-        }
-    });
-
-    thread second_quarter([quarter, &pic, &cont, this]() {
-        vector<thread> optimization_threads2;
-        for (int x = quarter; x < 2 * quarter; x++) {
-            optimization_threads2.emplace_back(std::thread([this, x, &pic, &cont]() {
-                for (int y = 1; y < pic.getheight() - 1; y++) {
-                    cont.setpixel(x, y, getaveragecol(pic, x, y));
-                }
-            }));
-        }
-        for (thread &th : optimization_threads2) {
-            if (th.joinable()) {
-                th.join();
-            }
-        }
-    });
-    thread third_quarter([quarter, &pic, &cont, this]() {
-        vector<thread> optimization_threads2;
-        for (int x = 2 * quarter; x < 3 * quarter; x++) {
-            optimization_threads2.emplace_back(std::thread([this, x, &pic, &cont]() {
-                for (int y = 1; y < pic.getheight() - 1; y++) {
-                    cont.setpixel(x, y, getaveragecol(pic, x, y));
-                }
-            }));
-        }
-        for (thread &th : optimization_threads2) {
-            if (th.joinable()) {
-                th.join();
-            }
-        }
-    });
-    thread last_quarter([quarter, &pic, &cont, this]() {
-        vector<thread> optimization_threads2;
-        for (int x = 3 * quarter; x < pic.getwidth() - 1; x++) {
-            optimization_threads2.emplace_back(std::thread([this, x, &pic, &cont]() {
-                for (int y = 1; y < pic.getheight() - 1; y++) {
-                    cont.setpixel(x, y, getaveragecol(pic, x, y));
-                }
-            }));
-        }
-        for (thread &th : optimization_threads2) {
-            if (th.joinable()) {
-                th.join();
-            }
-        }
-    });
-    first_quarter.join();
-    second_quarter.join();
-    third_quarter.join();
-    last_quarter.join();
-    }else{
-        int quarter = pic.getheight() / 4;
         thread first_quarter([quarter, &pic, &cont, this]() {
             vector<thread> optimization_threads1;
             for (int x = 1; x < quarter; x++) {
                 optimization_threads1.emplace_back(std::thread([this, x, &pic, &cont]() {
-                    for (int y = 1; y < pic.getwidth() - 1; y++) {
+                    for (int y = 1; y < pic.getheight() - 1; y++) {
                         cont.setpixel(x, y, getaveragecol(pic, x, y));
                     }
                 }));
@@ -226,7 +160,7 @@ void PicLibrary::blur(string filename) {
             vector<thread> optimization_threads2;
             for (int x = quarter; x < 2 * quarter; x++) {
                 optimization_threads2.emplace_back(std::thread([this, x, &pic, &cont]() {
-                    for (int y = 1; y < pic.getwidth() - 1; y++) {
+                    for (int y = 1; y < pic.getheight() - 1; y++) {
                         cont.setpixel(x, y, getaveragecol(pic, x, y));
                     }
                 }));
@@ -241,7 +175,7 @@ void PicLibrary::blur(string filename) {
             vector<thread> optimization_threads2;
             for (int x = 2 * quarter; x < 3 * quarter; x++) {
                 optimization_threads2.emplace_back(std::thread([this, x, &pic, &cont]() {
-                    for (int y = 1; y < pic.getwidth() - 1; y++) {
+                    for (int y = 1; y < pic.getheight() - 1; y++) {
                         cont.setpixel(x, y, getaveragecol(pic, x, y));
                     }
                 }));
@@ -256,8 +190,75 @@ void PicLibrary::blur(string filename) {
             vector<thread> optimization_threads2;
             for (int x = 3 * quarter; x < pic.getwidth() - 1; x++) {
                 optimization_threads2.emplace_back(std::thread([this, x, &pic, &cont]() {
-                    for (int y = 1; y < pic.getwidth() - 1; y++) {
+                    for (int y = 1; y < pic.getheight() - 1; y++) {
                         cont.setpixel(x, y, getaveragecol(pic, x, y));
+                    }
+                }));
+            }
+            for (thread &th : optimization_threads2) {
+                if (th.joinable()) {
+                    th.join();
+                }
+            }
+        });
+        first_quarter.join();
+        second_quarter.join();
+        third_quarter.join();
+        last_quarter.join();
+    } else {
+        int quarter = pic.getheight() / 4;
+        thread first_quarter([quarter, &pic, &cont, this]() {
+            vector<thread> optimization_threads1;
+            for (int x = 1; x < quarter; x++) {
+                optimization_threads1.emplace_back(std::thread([this, x, &pic, &cont]() {
+                    for (int y = 1; y < pic.getwidth() - 1; y++) {
+                        cont.setpixel(y, x, getaveragecol(pic, y, x));
+                    }
+                }));
+            }
+            for (thread &th : optimization_threads1) {
+                if (th.joinable()) {
+                    th.join();
+                }
+            }
+        });
+
+        thread second_quarter([quarter, &pic, &cont, this]() {
+            vector<thread> optimization_threads2;
+            for (int x = quarter; x < 2 * quarter; x++) {
+                optimization_threads2.emplace_back(std::thread([this, x, &pic, &cont]() {
+                    for (int y = 1; y < pic.getwidth() - 1; y++) {
+                        cont.setpixel(y, x, getaveragecol(pic, y, x));
+                    }
+                }));
+            }
+            for (thread &th : optimization_threads2) {
+                if (th.joinable()) {
+                    th.join();
+                }
+            }
+        });
+        thread third_quarter([quarter, &pic, &cont, this]() {
+            vector<thread> optimization_threads2;
+            for (int x = 2 * quarter; x < 3 * quarter; x++) {
+                optimization_threads2.emplace_back(std::thread([this, x, &pic, &cont]() {
+                    for (int y = 1; y < pic.getwidth() - 1; y++) {
+                        cont.setpixel(y, x, getaveragecol(pic, y, x));
+                    }
+                }));
+            }
+            for (thread &th : optimization_threads2) {
+                if (th.joinable()) {
+                    th.join();
+                }
+            }
+        });
+        thread last_quarter([quarter, &pic, &cont, this]() {
+            vector<thread> optimization_threads2;
+            for (int x = 3 * quarter; x < pic.getheight() - 1; x++) {
+                optimization_threads2.emplace_back(std::thread([this, x, &pic, &cont]() {
+                    for (int y = 1; y < pic.getwidth() - 1; y++) {
+                        cont.setpixel(y, x, getaveragecol(pic, y, x));
                     }
                 }));
             }
