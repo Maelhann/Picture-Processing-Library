@@ -11,11 +11,13 @@ class PicLibrary {
  /* THREAD-SAFETY OF THE PICLIBRARY CLASS :
   *
   * My Synchronization strategy was to implement a list of operation threads, each operation thread getting exclusive
-  * access to the image it wants to transform
+  * access to the image it wants to transform via a mutex lock.
   *
-  * For each available picture transformation, I wrote a concurrent wrapper which adds a mutex lock
-  * to get exclusive access to the picture we want to transform,
+  * For each available transformation, the concurrent wrapper works as follow :
+  *  - Add a new thread at the back of the list of active threads performing picture transformations
+  *  - This thread acquires a lock and executes the transformation before releasing the lock.
   *
+  * This strategy ensures that
   * */
 
 

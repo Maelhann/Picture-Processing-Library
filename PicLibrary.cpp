@@ -142,7 +142,7 @@ void PicLibrary::blur(string filename) {
 
     if (pic.getheight() <= pic.getwidth()) {
         thread first_half([&optimization_threads, &pic, &cont, this]() {
-            for (int x = 1; x < (pic.getheight() - 1 / 2); x++) {
+            for (int x = 1; x < pic.getheight() / 2; x++) {
                 optimization_threads.emplace_back(std::thread([this, x, &pic, &cont]() {
                     for (int y = 1; y < pic.getwidth() - 1; y++) {
                         cont.setpixel(y, x, getaveragecol(pic, y, x));
@@ -152,7 +152,7 @@ void PicLibrary::blur(string filename) {
         });
 
         thread second_half([&optimization_threads, &pic, &cont, this]() {
-            for (int x = (pic.getheight() - 1 / 2); x < pic.getheight() - 1; x++) {
+            for (int x = pic.getheight() / 2; x < pic.getheight() - 1; x++) {
                 optimization_threads.emplace_back(std::thread([this, x, &pic, &cont]() {
                     for (int y = 1; y < pic.getwidth() - 1; y++) {
                         cont.setpixel(y, x, getaveragecol(pic, y, x));
@@ -164,7 +164,7 @@ void PicLibrary::blur(string filename) {
         second_half.join();
     } else {
         thread first_half([&optimization_threads, &pic, &cont, this]() {
-            for (int x = 1; (x < pic.getwidth() - 1) / 2; x++) {
+            for (int x = 1; x < pic.getwidth() / 2; x++) {
                 optimization_threads.emplace_back(std::thread([this, x, &pic, &cont]() {
                     for (int y = 1; y < pic.getheight() - 1; y++) {
                         cont.setpixel(x, y, getaveragecol(pic, x, y));
@@ -173,7 +173,7 @@ void PicLibrary::blur(string filename) {
             }
         });
         thread second_half([&optimization_threads, &pic, &cont, this]() {
-            for (int x = (pic.getwidth() - 1 / 2); x < pic.getwidth() - 1; x++) {
+            for (int x = (pic.getwidth() / 2); x < pic.getwidth() - 1; x++) {
                 optimization_threads.emplace_back(std::thread([this, x, &pic, &cont]() {
                     for (int y = 1; y < pic.getheight() - 1; y++) {
                         cont.setpixel(x, y, getaveragecol(pic, x, y));
