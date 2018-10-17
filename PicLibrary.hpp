@@ -37,7 +37,7 @@ class PicLibrary {
      * of each section to a thread.
      *
      * Each of these 4 subthreads concurrently computes the colour and blurs the pixels in each
-     * column by creating one thread per column (column by column optimization).
+     * column by creating one thread per column or row (line by line optimization).
      *
      * I therefore eventually settled for a mix between section-wise optimization,
      * since I'm splitting the picture in four sub-sections which I handle concurrently,
