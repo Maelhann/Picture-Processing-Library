@@ -175,19 +175,47 @@ void PicLibrary::blur(string filename) {
 }
 
 
+/*
+ * Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
+   Colour avg = Colour(0, 0, 0);
+   int rval = 0;
+   int bval = 0;
+   int gval = 0;
+
+   vector<thread> optimization_threads;
+   for (int i = x - 1; i < x + 2; i++) {
+       for (int j = y - 1; j < y + 2; j++) {
+           rval += pic.getpixel(i, y-1).getred() + pic.getpixel(i,y-2).getred()
+                   + pic.getpixel(i,y-3).getred();
+           bval += pic.getpixel(i, j).getblue();
+           gval += pic.getpixel(i, j).getgreen();
+       }
+
+
+   }
+
+   avg.setred(rval / 9);
+   avg.setblue(bval / 9);
+   avg.setgreen(gval / 9);
+   return avg;
+}
+ */
+
 Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
     Colour avg = Colour(0, 0, 0);
     int rval = 0;
     int bval = 0;
     int gval = 0;
+
     vector<thread> optimization_threads;
     for (int i = x - 1; i < x + 2; i++) {
-        for (int j = y - 1; j < y + 2; j++) {
-            rval += pic.getpixel(i, j).getred();
-            bval += pic.getpixel(i, j).getblue();
-            gval += pic.getpixel(i, j).getgreen();
-        }
 
+        rval += pic.getpixel(i, y - 1).getred() + pic.getpixel(i, y - 2).getred()
+                + pic.getpixel(i, y - 3).getred();
+        bval += pic.getpixel(i, y - 1).getblue() + pic.getpixel(i, y - 2).getblue()
+                + pic.getpixel(i, y - 3).getblue();
+        gval += pic.getpixel(i, y - 1).getgreen() + pic.getpixel(i, y - 2).getgreen()
+                + pic.getpixel(i, y - 3).getgreen();
 
     }
 
