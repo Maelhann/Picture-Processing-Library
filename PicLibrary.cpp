@@ -153,7 +153,6 @@ void PicLibrary::blur(string filename) {
     });
 
     thread third_quarter([quarter, &pic, &cont, this]() {
-        vector<thread> optimization_threads2;
         for (int x = 2 * quarter; x < 3 * quarter; x++) {
             for (int y = 1; y < pic.getwidth() - 1; y++) {
                 cont.setpixel(y, x, getaveragecol(pic, y, x));
@@ -162,7 +161,6 @@ void PicLibrary::blur(string filename) {
     });
 
     thread last_quarter([quarter, &pic, &cont, this]() {
-        vector<thread> optimization_threads2;
         for (int x = 3 * quarter; x < pic.getheight() - 1; x++) {
             for (int y = 1; y < pic.getwidth() - 1; y++) {
                 cont.setpixel(y, x, getaveragecol(pic, y, x));
