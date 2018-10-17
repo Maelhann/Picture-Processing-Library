@@ -43,10 +43,7 @@ class PicLibrary {
      * since I'm splitting the picture in four sub-sections which I handle concurrently,
      * and Line-By-Line, as all of the sections blur the columns of pixels concurrently.
      *
-     *
-     *
-     *
-     * */
+     */
 
 
 private:

@@ -15,7 +15,6 @@ using namespace std;
 int main(int argc, char **argv) {
     map<string, int> commands_to_integers;
     commands_to_integers.insert(pair<string, int>("exit", 0));
-    commands_to_integers.insert(pair<string, int>("\n", 0));
     commands_to_integers.insert(pair<string, int>("liststore", 1));
     commands_to_integers.insert(pair<string, int>("load", 2));
     commands_to_integers.insert(pair<string, int>("unload", 3));
@@ -31,13 +30,10 @@ int main(int argc, char **argv) {
     Picture picture;
     Mat image = Mat();
 
-    int i = 1;
-
-    while (i < argc) {
+    for (int i = 1; i < argc; i++) {
         string img_name = ((string) argv[i]).
                 substr(((string) argv[i]).find_last_of('/') + 1);
         lib.loadpicture(argv[i], img_name);
-        i++;
     }
 
     while (true) {
@@ -57,7 +53,6 @@ int main(int argc, char **argv) {
                 cout << "Invalid or malformed command" << endl;
                 continue;
             }
-
             switch (command_index) {
                 case 1 :
                     lib.print_picturestore();
@@ -119,7 +114,8 @@ int main(int argc, char **argv) {
                 case 0 :
                     cout << "Now exiting interpreter" << endl;
                     return 0;
-
+                default:
+                    break;
             }
             lib.jointhreads();
         } else {

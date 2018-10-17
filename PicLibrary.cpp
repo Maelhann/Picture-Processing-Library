@@ -34,7 +34,7 @@ void PicLibrary::unloadpicture(string filename) {
 }
 
 void PicLibrary::print_picturestore() {
-    for (auto cursor = PicLibrary::store.begin(); cursor != PicLibrary::store.end(); ++cursor) {
+    for(auto cursor = PicLibrary::store.begin(); cursor != PicLibrary::store.end(); ++cursor) {
         cout << endl << cursor->first;
     }
 }
