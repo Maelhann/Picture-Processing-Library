@@ -135,7 +135,7 @@ void PicLibrary::blur(string filename) {
     Picture pic = getpicture(filename);
     Picture cont = Picture(pic.getwidth(), pic.getheight());
     cont.setimage(pic.getimage());
-    int quarter = pic.getheight() / 5;
+    int quarter = pic.getheight() / 6;
     thread first_quarter([quarter, &pic, &cont, this]() {
         for (int x = 1; x < quarter; x++) {
             for (int y = 1; y < pic.getwidth() - 1; y++) {
@@ -159,14 +159,21 @@ void PicLibrary::blur(string filename) {
         }
     });
     thread fourth_quarter([quarter, &pic, &cont, this]() {
-        for (int x = 3 * quarter; x < 4*quarter; x++) {
+        for (int x = 3 * quarter; x < 4 * quarter; x++) {
+            for (int y = 1; y < pic.getwidth() - 1; y++) {
+                cont.setpixel(y, x, getaveragecol(pic, y, x));
+            }
+        }
+    });
+    thread fifth_quarter([quarter, &pic, &cont, this]() {
+        for (int x = 4 * quarter; x < 5 * quarter; x++) {
             for (int y = 1; y < pic.getwidth() - 1; y++) {
                 cont.setpixel(y, x, getaveragecol(pic, y, x));
             }
         }
     });
     thread last_quarter([quarter, &pic, &cont, this]() {
-        for (int x = 4 * quarter; x < pic.getheight() - 1; x++) {
+        for (int x = 5 * quarter; x < pic.getheight() - 1; x++) {
             for (int y = 1; y < pic.getwidth() - 1; y++) {
                 cont.setpixel(y, x, getaveragecol(pic, y, x));
             }
@@ -175,7 +182,8 @@ void PicLibrary::blur(string filename) {
     first_quarter.join();
     second_quarter.join();
     third_quarter.join();
-    fourth_quarter.join(); 
+    fourth_quarter.join();
+    fifth_quarter.join();
     last_quarter.join();
     setpicture(filename, cont);
 }
