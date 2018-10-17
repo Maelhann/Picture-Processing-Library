@@ -136,7 +136,7 @@ void PicLibrary::flipVH(char plane, string filename) {
 }
 
 
-void PicLibrary::pixelbypixelblur(string filename) {
+void PicLibrary::blur(string filename) {
     Picture pic = getpicture(filename);
     Picture cont = Picture(pic.getwidth(), pic.getheight());
     int quarterheight = pic.getheight() / 2;
@@ -213,7 +213,7 @@ void PicLibrary::sequentialblur(string filename) {
 }
 
 
-void PicLibrary::blur(string filename) {
+void PicLibrary::pixelbypixelblur(string filename) {
     Picture pic = getpicture(filename);
     Picture cont = Picture(pic.getwidth(), pic.getheight());
     cont.setimage(pic.getimage());

@@ -21,7 +21,7 @@ class PicLibrary {
      *    and executes the transformation before releasing the lock.
      *
      * This strategy ensures that no two transformations happen at the same time on the same picture,
-     * making the PicLibrary.
+     * making the PicLibrary threadsafe.
      * Adding lock() and unlock() functions in Pictures gives us a way to independently transform different pictures
      * concurrently. It is also more efficient and fine grained than locking
      * PicLibrary with a general mutex, which would still in effect be sequential, even if it means my implementation
@@ -30,6 +30,8 @@ class PicLibrary {
      * Additionally, since new operations are placed at the back of the thread list, and since they need to acquire
      * the lock of the pictures they want to transform, the operation order is maintained throughout the execution
      * of our program
+     *
+     *
      *
      * OPTIMIZATION OF THE BLUR FUNCTION :
      *
@@ -67,11 +69,7 @@ class PicLibrary {
      * optimization, the time it took to create threads in each section slowed me down to about 1400, Hence my choice
      * to keep the final version with the 4 subsections, but without line by line optimization for each of them. 
      *
-     *
-     *
-     *
-     *
-     *
+     * MORE INPUT AND DATA IN REPORT.
      *
      */
 
@@ -80,6 +78,7 @@ private:
 
     std::map<string, Picture> store;
     vector<thread> active_threads;
+    int priority_level ;
 
 
 public:
