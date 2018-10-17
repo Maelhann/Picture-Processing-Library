@@ -33,15 +33,13 @@ class PicLibrary {
      * OPTIMIZATION OF THE BLUR FUNCTION :
      *
      * I experimented and pushed multiple implementations for the blur() and getAverageCol() functions,
-     * I achieved the best performance when I split the image to blur in four sections, and delegated the blurring
+     * I achieved the best performance when I split the image to blur in four square
+     * 2d sections, and delegated the blurring
      * of each section to a thread.
      *
-     * Each of these 4 subthreads concurrently computes the colour and blurs the pixels in each
-     * column by creating one thread per column or row (line by line optimization).
+     * Each of these 4 subthreads concurrently blurs the picture.
      *
-     * I therefore eventually settled for a mix between section-wise optimization,
-     * since I'm splitting the picture in four sub-sections which I handle concurrently,
-     * and Line-By-Line, as all of the sections blur the columns of pixels concurrently.
+     *
      *
      */
 
