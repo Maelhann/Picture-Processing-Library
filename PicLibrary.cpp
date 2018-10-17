@@ -5,13 +5,10 @@
 
 using namespace std;
 
-//idea : map each filename to a thread . each thread is dedicated to its' picture.
-
 void PicLibrary::loadpicture(string path, string filename) {
     Picture picture = Picture(path);
     store.insert(pair<string, Picture>(filename, picture));
 }
-
 
 Picture PicLibrary::getpicture(string filename) {
     auto picture_iter = store.find(filename);
@@ -22,7 +19,6 @@ Picture PicLibrary::getpicture(string filename) {
         return picture_iter->second;
     }
 }
-
 
 void PicLibrary::setpicture(string filename, Picture picture) {
     auto picture_iter = store.find(filename);
@@ -41,7 +37,6 @@ void PicLibrary::print_picturestore() {
     for (auto cursor = PicLibrary::store.begin(); cursor != PicLibrary::store.end(); ++cursor) {
         cout << endl << cursor->first;
     }
-
 }
 
 void PicLibrary::savepicture(string filename, string path) {
@@ -154,7 +149,7 @@ void PicLibrary::blur(string filename) {
     vector<thread> optimization_threads;
     cont.setimage(pic.getimage());
 
-    if (pic.getheight() >= pic.getwidth()) {
+    if (pic.getheight() <= pic.getwidth()) {
         for (int x = 1; x < pic.getheight() - 1; x++) {
             optimization_threads.emplace_back(std::thread([this, x, &pic, &cont]() {
                 for (int y = 1; y < pic.getwidth() - 1; y++) {
@@ -178,32 +173,6 @@ void PicLibrary::blur(string filename) {
     setpicture(filename, cont);
 
 }
-
-
-/*
-void PicLibrary::blur(string filename) {
-    Picture pic = getpicture(filename);
-    Picture cont = Picture(pic.getwidth(), pic.getheight());
-    vector<thread> optimization_threads;
-    cont.setimage(pic.getimage());
-    int sectionLength = (pic.getheight() - 1) / 8;
-    for (int b = 1; b < sectionLength; b++) {
-        optimization_threads.emplace_back(std::thread([this, b, &pic, &cont, sectionLength]() {
-            for (int x = b; x < b + sectionLength; x++) {
-                for (int y = 1; y < pic.getwidth() - 1; y++) {
-                    cont.setpixel(y, x, getaveragecol(pic, y, x));
-                }
-            }
-        }));
-    }
-
-    setpicture(filename, cont);
-    for (thread &th : optimization_threads) {
-        th.join();
-    }
-
-
-}*/
 
 
 Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
