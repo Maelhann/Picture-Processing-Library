@@ -147,31 +147,40 @@ void PicLibrary::flipVH(char plane, string filename) {
     setpicture(filename, cont);
 }
 
-/*
+
 void PicLibrary::blur(string filename) {
     Picture pic = getpicture(filename);
     Picture cont = Picture(pic.getwidth(), pic.getheight());
     vector<thread> optimization_threads;
     cont.setimage(pic.getimage());
 
-    int sectionLength = (pic.getheight() - 1)  / 4 ;
-
-
-    for (int x = 1; x < pic.getheight() - 1; x++) {
-        optimization_threads.emplace_back(std::thread([this, x, &pic, &cont]() {
-            for (int y = 1; y < pic.getwidth() - 1; y++) {
-                cont.setpixel(y, x, getaveragecol(pic, y, x));
-            }
-        }));
+    if (pic.getheight() >= pic.getwidth()) {
+        for (int x = 1; x < pic.getheight() - 1; x++) {
+            optimization_threads.emplace_back(std::thread([this, x, &pic, &cont]() {
+                for (int y = 1; y < pic.getwidth() - 1; y++) {
+                    cont.setpixel(y, x, getaveragecol(pic, y, x));
+                }
+            }));
+        }
+    } else {
+        for (int x = 1; x < pic.getwidth() - 1; x++) {
+            optimization_threads.emplace_back(std::thread([this, x, &pic, &cont]() {
+                for (int y = 1; y < pic.getheight() - 1; y++) {
+                    cont.setpixel(x, y, getaveragecol(pic, x, y));
+                }
+            }));
+        }
     }
-
 
     for (thread &th : optimization_threads) {
         th.join();
     }
     setpicture(filename, cont);
 
-}*/
+}
+
+
+/*
 void PicLibrary::blur(string filename) {
     Picture pic = getpicture(filename);
     Picture cont = Picture(pic.getwidth(), pic.getheight());
@@ -194,7 +203,7 @@ void PicLibrary::blur(string filename) {
     }
 
 
-}
+}*/
 
 
 Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
