@@ -60,9 +60,7 @@ void PicLibrary::invert(string filename) {
             newcolor.setred(255 - newcolor.getred());
             pic.setpixel(x, y, newcolor);
         }
-
     }
-
     setpicture(filename, pic);
 }
 
@@ -78,7 +76,6 @@ void PicLibrary::grayscale(string filename) {
             newcolor.setblue(graycolor);
             pic.setpixel(x, y, newcolor);
         }
-
     }
     setpicture(filename, pic);
 }
@@ -138,7 +135,7 @@ void PicLibrary::blur(string filename) {
     Picture pic = getpicture(filename);
     Picture cont = Picture(pic.getwidth(), pic.getheight());
     cont.setimage(pic.getimage());
-    int quarter = pic.getheight() / 4;
+    int quarter = pic.getheight() / 5;
     thread first_quarter([quarter, &pic, &cont, this]() {
         for (int x = 1; x < quarter; x++) {
             for (int y = 1; y < pic.getwidth() - 1; y++) {
@@ -155,25 +152,31 @@ void PicLibrary::blur(string filename) {
     });
     thread third_quarter([quarter, &pic, &cont, this]() {
         for (int x = 2 * quarter; x < 3 * quarter; x++) {
-            for (int y = 1; y < pic.getwidth()- 1; y++) {
+            for (int y = 1; y < pic.getwidth() - 1; y++) {
                 cont.setpixel(y, x, getaveragecol(pic, y, x));
             }
 
         }
     });
-    thread last_quarter([quarter, &pic, &cont, this]() {
-        for (int x = 3 * quarter; x < pic.getheight() - 1; x++) {
+    thread fourth_quarter([quarter, &pic, &cont, this]() {
+        for (int x = 3 * quarter; x < 4*quarter; x++) {
             for (int y = 1; y < pic.getwidth() - 1; y++) {
                 cont.setpixel(y, x, getaveragecol(pic, y, x));
             }
         }
     });
-
+    thread last_quarter([quarter, &pic, &cont, this]() {
+        for (int x = 4 * quarter; x < pic.getheight() - 1; x++) {
+            for (int y = 1; y < pic.getwidth() - 1; y++) {
+                cont.setpixel(y, x, getaveragecol(pic, y, x));
+            }
+        }
+    });
     first_quarter.join();
     second_quarter.join();
     third_quarter.join();
+    fourth_quarter.join(); 
     last_quarter.join();
-
     setpicture(filename, cont);
 }
 
