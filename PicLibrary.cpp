@@ -137,32 +137,29 @@ void PicLibrary::blur(string filename) {
     int quarter = pic.getheight() / 4;
     cont.setimage(pic.getimage());
     thread first_quarter([quarter, &pic, &cont, this]() {
-        for (int x = 1; x < quarter; x++) {
-            for (int y = 1; y < pic.getwidth() - 1; y++) {
+        for (int y = 1; y < pic.getwidth() - 1; y++) {
+            for (int x = 1; x < quarter; x++) {
                 cont.setpixel(y, x, getaveragecol(pic, y, x));
             }
         }
     });
-
     thread second_quarter([quarter, &pic, &cont, this]() {
-        for (int x = quarter; x < 2 * quarter; x++) {
-            for (int y = 1; y < pic.getwidth() - 1; y++) {
+        for (int y = 1; y < pic.getwidth() - 1; y++) {
+            for (int x = quarter; x < 2 * quarter; x++) {
                 cont.setpixel(y, x, getaveragecol(pic, y, x));
             }
         }
     });
-
     thread third_quarter([quarter, &pic, &cont, this]() {
-        for (int x = 2 * quarter; x < 3 * quarter; x++) {
-            for (int y = 1; y < pic.getwidth() - 1; y++) {
+        for (int y = 1; y < pic.getwidth() - 1; y++) {
+            for (int x = 2 * quarter; x < 3 * quarter; x++) {
                 cont.setpixel(y, x, getaveragecol(pic, y, x));
             }
         }
     });
-
     thread last_quarter([quarter, &pic, &cont, this]() {
-        for (int x = 3 * quarter; x < pic.getheight() - 1; x++) {
-            for (int y = 1; y < pic.getwidth() - 1; y++) {
+        for (int y = 1; y < pic.getwidth() - 1; y++) {
+            for (int x = 3 * quarter; x < pic.getheight() - 1; x++) {
                 cont.setpixel(y, x, getaveragecol(pic, y, x));
             }
         }
