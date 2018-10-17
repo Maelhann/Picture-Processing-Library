@@ -30,6 +30,21 @@ class PicLibrary {
      * the lock of the pictures they want to transform, the operation order is maintained throughout the execution
      * of our program
      *
+     * OPTIMIZATION OF THE BLUR FUNCTION :
+     *
+     * I experimented and pushed multiple implementations for the blur() and getAverageCol() functions,
+     * I achieved the best performance when I split the image to blur in four sections, and delegated the blurring
+     * of each section to a thread.
+     *
+     * Each of these 4 subthreads concurrently computes the colour and blurs the pixels in each
+     * column by creating one thread per column (column by column optimization).
+     *
+     * I therefore eventually settled for a mix between section-wise optimization,
+     * since I'm splitting the picture in four sub-sections which I handle concurrently,
+     * and Line-By-Line, as all of the sections blur the columns of pixels concurrently.
+     *
+     * I also implemented a check, to make sure we maximize the parallelization of the picture processing,
+     * if there are more rows, than we compute concurrently row-by-row, otherwise we compute pixels column-by-column. 
      *
      *
      * */
@@ -38,7 +53,6 @@ class PicLibrary {
 private:
 
     map<string, Picture> store;
-    mutex lock;
     vector<thread> active_threads;
 
 
