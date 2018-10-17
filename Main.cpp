@@ -55,7 +55,6 @@ int main(int argc, char **argv) {
                 cout << "Invalid or malformed command" << endl;
                 continue;
             }
-
             switch (command_index) {
                 case 1 :
                     lib.print_picturestore();

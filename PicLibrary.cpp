@@ -199,9 +199,9 @@ Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
     return avg;
 }
 
-/* PREVIOUS BLUR ATTEMPTS
+/* PREVIOUS BLUR ATTEMPTS (SEE .HPP FOR OBSERVATIONS AND DETAILS)
  *
- * OPTIMIZATION BY QUARTERING + LINE BY LINE
+ * OPTIMIZATION BY SPLITTING INTO SECTIONS OF LINE + LINE BY LINE OPTIMIZATION.
  *
  * void PicLibrary::blur(string filename) {
     Picture pic = getpicture(filename);
@@ -278,7 +278,7 @@ Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
 }
 
  *
- * OPTIMIZATION BY HALFING THE PICTURE (SUBSECTION OF TWO ) AND ROW-BY ROW OPTIMIZATION
+ * OPTIMIZATION BY HALFING THE PICTURE (SUBSECTION OF TWO ) AND CONCURRENTLY COMPUTING ROW BY ROW
  *
  *void PicLibrary::blur(string filename) {
     Picture pic = getpicture(filename);
