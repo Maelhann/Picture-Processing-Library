@@ -147,11 +147,16 @@ void PicLibrary::flipVH(char plane, string filename) {
     setpicture(filename, cont);
 }
 
+/*
 void PicLibrary::blur(string filename) {
     Picture pic = getpicture(filename);
     Picture cont = Picture(pic.getwidth(), pic.getheight());
     vector<thread> optimization_threads;
     cont.setimage(pic.getimage());
+
+    int sectionLength = (pic.getheight() - 1)  / 4 ;
+
+
     for (int x = 1; x < pic.getheight() - 1; x++) {
         optimization_threads.emplace_back(std::thread([this, x, &pic, &cont]() {
             for (int y = 1; y < pic.getwidth() - 1; y++) {
@@ -159,12 +164,38 @@ void PicLibrary::blur(string filename) {
             }
         }));
     }
+
+
     for (thread &th : optimization_threads) {
         th.join();
     }
     setpicture(filename, cont);
 
+}*/
+void PicLibrary::blur(string filename) {
+    Picture pic = getpicture(filename);
+    Picture cont = Picture(pic.getwidth(), pic.getheight());
+    vector<thread> optimization_threads;
+    cont.setimage(pic.getimage());
+    int sectionLength = (pic.getheight() - 1) / 4;
+    for (int b = 0; b < sectionLength; b++) {
+        optimization_threads.emplace_back(std::thread([this, b, &pic, &cont, sectionLength]() {
+            for (int x = b + 1; x < b + sectionLength; x++) {
+                for (int y = 1; y < pic.getwidth() - 1; y++) {
+                    cont.setpixel(y, x, getaveragecol(pic, y, x));
+                }
+            }
+        }));
+    }
+
+    setpicture(filename, cont);
+    for (thread &th : optimization_threads) {
+        th.join();
+    }
+
+
 }
+
 
 Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
     Colour avg = Colour(0, 0, 0);
@@ -173,19 +204,14 @@ Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
     int gval = 0;
     vector<thread> optimization_threads;
     for (int i = x - 1; i < x + 2; i++) {
-       // optimization_threads.emplace_back(thread([i, y, &rval, &bval, &gval, &pic]() {
-            for (int j = y - 1; j < y + 2; j++) {
-                rval += pic.getpixel(i, j).getred();
-                bval += pic.getpixel(i, j).getblue();
-                gval += pic.getpixel(i, j).getgreen();
-            }
+        for (int j = y - 1; j < y + 2; j++) {
+            rval += pic.getpixel(i, j).getred();
+            bval += pic.getpixel(i, j).getblue();
+            gval += pic.getpixel(i, j).getgreen();
+        }
 
-       // }));
+
     }
-    
-    /*for (thread &th : optimization_threads) {
-        th.join();
-    }*/
 
     avg.setred(rval / 9);
     avg.setblue(bval / 9);
