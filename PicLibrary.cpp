@@ -136,15 +136,15 @@ void PicLibrary::flipVH(char plane, string filename) {
 void PicLibrary::blur(string filename) {
     Picture pic = getpicture(filename);
     Picture cont = Picture(pic.getwidth(), pic.getheight());
-    int quarter = pic.getheight() / 4;
+    int quarter = pic.getwidth() / 4;
     cont.setimage(pic.getimage());
     // if (pic.getwidth() < pic.getheight()) {
     thread first_quarter([quarter, &pic, &cont, this]() {
         vector<thread> optimization_threads1;
         for (int x = 1; x < quarter; x++) {
             optimization_threads1.emplace_back(std::thread([this, x, &pic, &cont]() {
-                for (int y = 1; y < pic.getwidth() - 1; y++) {
-                    cont.setpixel(y, x, getaveragecol(pic, y, x));
+                for (int y = 1; y < pic.getheight() - 1; y++) {
+                    cont.setpixel(x, y, getaveragecol(pic, x, y));
                 }
             }));
         }
@@ -159,8 +159,8 @@ void PicLibrary::blur(string filename) {
         vector<thread> optimization_threads2;
         for (int x = quarter; x < 2 * quarter; x++) {
             optimization_threads2.emplace_back(std::thread([this, x, &pic, &cont]() {
-                for (int y = 1; y < pic.getwidth() - 1; y++) {
-                    cont.setpixel(y, x, getaveragecol(pic, y, x));
+                for (int y = 1; y < pic.getheight() - 1; y++) {
+                    cont.setpixel(x, y, getaveragecol(pic, x, y));
                 }
             }));
         }
@@ -174,8 +174,8 @@ void PicLibrary::blur(string filename) {
         vector<thread> optimization_threads2;
         for (int x = 2 * quarter; x < 3 * quarter; x++) {
             optimization_threads2.emplace_back(std::thread([this, x, &pic, &cont]() {
-                for (int y = 1; y < pic.getwidth() - 1; y++) {
-                    cont.setpixel(y, x, getaveragecol(pic, y, x));
+                for (int y = 1; y < pic.getheight() - 1; y++) {
+                    cont.setpixel(x, y, getaveragecol(pic, x, y));
                 }
             }));
         }
@@ -189,8 +189,8 @@ void PicLibrary::blur(string filename) {
         vector<thread> optimization_threads2;
         for (int x = 3 * quarter; x < pic.getheight() - 1; x++) {
             optimization_threads2.emplace_back(std::thread([this, x, &pic, &cont]() {
-                for (int y = 1; y < pic.getwidth() - 1; y++) {
-                    cont.setpixel(y, x, getaveragecol(pic, y, x));
+                for (int y = 1; y < pic.getheight() - 1; y++) {
+                    cont.setpixel(x, y, getaveragecol(pic, x, y));
                 }
             }));
         }
