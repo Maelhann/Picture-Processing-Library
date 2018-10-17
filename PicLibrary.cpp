@@ -340,9 +340,9 @@ void PicLibrary::concurrentgrayscale(string filename) {
 
 void PicLibrary::concurrentrotate(int angle, string filename) {
     active_threads.emplace_back(std::thread([this, angle, filename]() {
-        lock.lock();
+        getpicture(filename).lockpicture();
         rotate(angle, filename);
-        lock.unlock();
+        getpicture(filename).unlockpicture(); 
     }));
 }
 
