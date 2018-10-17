@@ -357,17 +357,17 @@ Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
 
 void PicLibrary::concurrentinvert(string filename) {
     active_threads.emplace_back(std::thread([this, filename]() {
-        lock.lock();
+        getpicture(filename).lockpicture();
         invert(filename);
-        lock.unlock();
+        getpicture(filename).unlockpicture();
     }));
 }
 
 void PicLibrary::concurrentgrayscale(string filename) {
     active_threads.emplace_back(std::thread([this, filename]() {
-        lock.lock();
+        getpicture(filename).lockpicture();
         grayscale(filename);
-        lock.unlock();
+        getpicture(filename).unlockpicture();
     }));
 }
 
@@ -381,17 +381,17 @@ void PicLibrary::concurrentrotate(int angle, string filename) {
 
 void PicLibrary::concurrentflip(char dir, string filename) {
     active_threads.emplace_back(std::thread([this, dir, filename]() {
-        lock.lock();
+        getpicture(filename).lockpicture();
         flipVH(dir, filename);
-        lock.unlock();
+        getpicture(filename).unlockpicture();
     }));
 }
 
 void PicLibrary::concurrentblur(string filename) {
     active_threads.emplace_back(std::thread([this, filename]() {
-        lock.lock();
+        getpicture(filename).lockpicture();
         blur(filename);
-        lock.unlock();
+        getpicture(filename).unlockpicture();
     }));
 }
 

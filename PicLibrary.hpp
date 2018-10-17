@@ -8,24 +8,26 @@
 
 class PicLibrary {
 
- /* THREAD-SAFETY OF THE PICLIBRARY CLASS :
-  *
-  * My Synchronization strategy was to implement a list of operation threads, each operation thread getting exclusive
-  * access to the image it wants to transform via a mutex lock.
-  *
-  * For each available transformation, the concurrent wrapper works as follow :
-  *  - Add a new thread at the back of the list of active threads performing picture transformations
-  *  - This thread acquires a locks the picture we want to transform
-  *    and executes the transformation before releasing the lock.
-  *
-  * This strategy ensures that no two transformations happen at the same time on the same picture,
-  * making the PicLibrary. It is also more efficient and fine grained than locking
-  * PicLibrary with a general mutex, which would still in effect be sequential. Adding lock() and unlock() functions
-  * in Pictures.
-  *
-  * Additionally, since new operations are placed at the back of the thread list, this choice ensures that operation
-  * order is maintaine
-  * */
+    /* THREAD-SAFETY OF THE PICLIBRARY CLASS :
+     *
+     * My Synchronization strategy was to implement a list of operation threads,
+     * each operation thread getting exclusive
+     * access to the image it wants to transform via a mutex lock.
+     *
+     * For each available transformation, the concurrent wrapper works as follow :
+     *  - Add a new thread at the back of the list of active threads performing picture transformations
+     *  - This thread acquires a locks the picture we want to transform
+     *    and executes the transformation before releasing the lock.
+     *
+     * This strategy ensures that no two transformations happen at the same time on the same picture,
+     * making the PicLibrary.
+     * Adding lock() and unlock() functions in Pictures gives us a way to independently transform different pictures
+     * concurrently. It is also more efficient and fine grained than locking
+     * PicLibrary with a general mutex, which would still in effect be sequential.
+     *
+     * Additionally, since new operations are placed at the back of the thread list,
+     * this choice ensures that operation order is maintained throughout.
+     * */
 
 
 private:
@@ -37,6 +39,7 @@ private:
 
 public:
     PicLibrary() {};
+
     ~PicLibrary() {};
 
     // command-line interpreter routines
