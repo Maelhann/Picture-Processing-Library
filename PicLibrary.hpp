@@ -15,9 +15,16 @@ class PicLibrary {
   *
   * For each available transformation, the concurrent wrapper works as follow :
   *  - Add a new thread at the back of the list of active threads performing picture transformations
-  *  - This thread acquires a lock and executes the transformation before releasing the lock.
+  *  - This thread acquires a locks the picture we want to transform
+  *    and executes the transformation before releasing the lock.
   *
-  * This strategy ensures that al
+  * This strategy ensures that no two transformations happen at the same time on the same picture,
+  * making the PicLibrary. It is also more efficient and fine grained than locking
+  * PicLibrary with a general mutex, which would still in effect be sequential. Adding lock() and unlock() functions
+  * in Pictures.
+  *
+  * Additionally, since new operations are placed at the back of the thread list, this choice ensures that operation
+  * order is maintaine
   * */
 
 

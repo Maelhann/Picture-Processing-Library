@@ -137,7 +137,7 @@ void PicLibrary::blur(string filename) {
     Picture pic = getpicture(filename);
     Picture cont = Picture(pic.getwidth(), pic.getheight());
     cont.setimage(pic.getimage());
-    if (pic.getwidth() >=  pic.getheight()) {
+    if (pic.getwidth() < pic.getheight()) {
         thread first_half([&pic, &cont, this]() {
             vector<thread> optimization_threads1;
             for (int x = 1; x < pic.getheight() / 2; x++) {
@@ -342,7 +342,7 @@ void PicLibrary::concurrentrotate(int angle, string filename) {
     active_threads.emplace_back(std::thread([this, angle, filename]() {
         getpicture(filename).lockpicture();
         rotate(angle, filename);
-        getpicture(filename).unlockpicture(); 
+        getpicture(filename).unlockpicture();
     }));
 }
 
