@@ -55,6 +55,7 @@ int main(int argc, char **argv) {
                 cout << "Invalid or malformed command" << endl;
                 continue;
             }
+
             switch (command_index) {
                 case 1 :
                     lib.print_picturestore();
@@ -99,39 +100,59 @@ int main(int argc, char **argv) {
                     break;
                 case 6 :
                     arguments >> arg;
-                    lib.concurrentinvert(arg);
+                    if (lib.isinlibrary(arg)) {
+                        lib.concurrentinvert(arg);
+                    } else {
+                        cout << "Error : couldn't find any file with a matching name";
+                    }
                     break;
                 case 7 :
                     arguments >> arg;
-                    lib.concurrentgrayscale(arg);
+                    if (lib.isinlibrary(arg)) {
+                        lib.concurrentgrayscale(arg);
+                    } else {
+                        cout << "Error : couldn't find any file with a matching name";
+                    }
                     break;
                 case 8 :
                     arguments >> arg;
                     arguments >> arg2;
-                    if (arg == "90") {
-                        lib.concurrentrotate(90, arg2);
-                    } else if (arg == "180") {
-                        lib.concurrentrotate(180, arg2);
-                    } else if (arg == "270") {
-                        lib.concurrentrotate(270, arg2);
+                    if (lib.isinlibrary(arg2)) {
+                        if (arg == "90") {
+                            lib.concurrentrotate(90, arg2);
+                        } else if (arg == "180") {
+                            lib.concurrentrotate(180, arg2);
+                        } else if (arg == "270") {
+                            lib.concurrentrotate(270, arg2);
+                        } else {
+                            cout << "Error : Invalid angle of rotation" << endl;
+                        }
                     } else {
-                        cout << "Error : Invalid angle of rotation" << endl;
+                        cout << "Error : couldn't find any file with a matching name";
                     }
                     break;
                 case 9 :
                     arguments >> arg;
                     arguments >> arg2;
-                    if (arg == "H") {
-                        lib.concurrentflip('H', arg2);
-                    } else if (arg == "V") {
-                        lib.concurrentflip('V', arg2);
+                    if (lib.isinlibrary(arg2)) {
+                        if (arg == "H") {
+                            lib.concurrentflip('H', arg2);
+                        } else if (arg == "V") {
+                            lib.concurrentflip('V', arg2);
+                        } else {
+                            cout << "Error : Invalid plane specified" << endl;
+                        }
                     } else {
-                        cout << "Error : Invalid plane specified" << endl;
+                        cout << "Error : couldn't find any file with a matching name";
                     }
                     break;
                 case 10 :
                     arguments >> arg;
-                    lib.concurrentblur(arg);
+                    if (lib.isinlibrary(arg)) {
+                        lib.concurrentblur(arg);
+                    } else {
+                        cout << "Error : couldn't find any file with a matching name";
+                    }
                     break;
                 case 0 :
                     cout << "Now exiting interpreter" << endl;
