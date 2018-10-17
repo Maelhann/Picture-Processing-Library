@@ -17,7 +17,7 @@ class PicLibrary {
   *  - Add a new thread at the back of the list of active threads performing picture transformations
   *  - This thread acquires a lock and executes the transformation before releasing the lock.
   *
-  * This strategy ensures that
+  * This strategy ensures that al
   * */
 
 

@@ -13,11 +13,13 @@ class Picture {
     // opencv representation of an image
     Mat img;
     Utils imgio;
+    Mutex lock;
 
   public:
       
   enum RGB {BLUE, GREEN, RED};
- 
+  void lockpicture();
+  void unlockpicture();
   // class constructor, loads an image from a provided file
   Picture(string path);
 

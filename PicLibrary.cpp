@@ -137,40 +137,77 @@ void PicLibrary::blur(string filename) {
     Picture pic = getpicture(filename);
     Picture cont = Picture(pic.getwidth(), pic.getheight());
     cont.setimage(pic.getimage());
-    thread first_half([&pic, &cont, this]() {
-        vector<thread> optimization_threads1;
-        for (int x = 1; x < pic.getheight() / 2; x++) {
-            optimization_threads1.emplace_back(std::thread([this, x, &pic, &cont]() {
-                for (int y = 1; y < pic.getwidth() - 1; y++) {
-                    cont.setpixel(y, x, getaveragecol(pic, y, x));
-                }
-            }));
-        }
-        for (thread &th : optimization_threads1) {
-            if (th.joinable()) {
-                th.join();
+    if (pic.getwidth() >=  pic.getheight()) {
+        thread first_half([&pic, &cont, this]() {
+            vector<thread> optimization_threads1;
+            for (int x = 1; x < pic.getheight() / 2; x++) {
+                optimization_threads1.emplace_back(std::thread([this, x, &pic, &cont]() {
+                    for (int y = 1; y < pic.getwidth() - 1; y++) {
+                        cont.setpixel(y, x, getaveragecol(pic, y, x));
+                    }
+                }));
             }
-        }
-    });
-
-    thread second_half([&pic, &cont, this]() {
-        vector<thread> optimization_threads2;
-        for (int x = pic.getheight() / 2; x < pic.getheight() - 1; x++) {
-            optimization_threads2.emplace_back(std::thread([this, x, &pic, &cont]() {
-                for (int y = 1; y < pic.getwidth() - 1; y++) {
-                    cont.setpixel(y, x, getaveragecol(pic, y, x));
+            for (thread &th : optimization_threads1) {
+                if (th.joinable()) {
+                    th.join();
                 }
-            }));
-        }
-        for (thread &th : optimization_threads2) {
-            if (th.joinable()) {
-                th.join();
             }
-        }
-    });
+        });
 
-    first_half.join();
-    second_half.join();
+        thread second_half([&pic, &cont, this]() {
+            vector<thread> optimization_threads2;
+            for (int x = pic.getheight() / 2; x < pic.getheight() - 1; x++) {
+                optimization_threads2.emplace_back(std::thread([this, x, &pic, &cont]() {
+                    for (int y = 1; y < pic.getwidth() - 1; y++) {
+                        cont.setpixel(y, x, getaveragecol(pic, y, x));
+                    }
+                }));
+            }
+            for (thread &th : optimization_threads2) {
+                if (th.joinable()) {
+                    th.join();
+                }
+            }
+        });
+        first_half.join();
+        second_half.join();
+    } else {
+        thread first_half([&pic, &cont, this]() {
+            vector<thread> optimization_threads1;
+            for (int x = 1; x < pic.getwidth() / 2; x++) {
+                optimization_threads1.emplace_back(std::thread([this, x, &pic, &cont]() {
+                    for (int y = 1; y < pic.getheight() - 1; y++) {
+                        cont.setpixel(x, y, getaveragecol(pic, x, y));
+                    }
+                }));
+            }
+            for (thread &th : optimization_threads1) {
+                if (th.joinable()) {
+                    th.join();
+                }
+            }
+        });
+
+        thread second_half([&pic, &cont, this]() {
+            vector<thread> optimization_threads2;
+            for (int x = pic.getwidth() / 2; x < pic.getwidth() - 1; x++) {
+                optimization_threads2.emplace_back(std::thread([this, x, &pic, &cont]() {
+                    for (int y = 1; y < pic.getheight() - 1; y++) {
+                        cont.setpixel(x, y, getaveragecol(pic, x, y));
+                    }
+                }));
+            }
+            for (thread &th : optimization_threads2) {
+                if (th.joinable()) {
+                    th.join();
+                }
+            }
+        });
+        first_half.join();
+        second_half.join();
+    }
+
+
     setpicture(filename, cont);
 
 }

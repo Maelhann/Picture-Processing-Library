@@ -13,6 +13,14 @@ Picture::Picture(int width, int height){
 
 Picture::Picture(){}
 
+void Picture::lockpicture(){
+    lock.lock();
+}
+
+void Picture::unlockpicture(){
+    lock.unlock();
+}
+
 int Picture::getwidth(){
     return img.size().width;
 }
