@@ -178,9 +178,9 @@ void PicLibrary::blur(string filename) {
     vector<thread> optimization_threads;
     cont.setimage(pic.getimage());
     int sectionLength = (pic.getheight() - 1) / 8;
-    for (int b = 0; b < sectionLength; b++) {
+    for (int b = 1; b < sectionLength; b++) {
         optimization_threads.emplace_back(std::thread([this, b, &pic, &cont, sectionLength]() {
-            for (int x = b + 1; x < b + sectionLength; x++) {
+            for (int x = b; x < b + sectionLength; x++) {
                 for (int y = 1; y < pic.getwidth() - 1; y++) {
                     cont.setpixel(y, x, getaveragecol(pic, y, x));
                 }
