@@ -146,7 +146,6 @@ void PicLibrary::blur(string filename) {
             }
         }
     });
-
     thread second_quarter([quarter, &pic, &cont, this]() {
         for (int x = quarter; x < 2 * quarter; x++) {
             for (int y = 1; y < pic.getwidth() - 1; y++) {
@@ -163,7 +162,7 @@ void PicLibrary::blur(string filename) {
         }
     });
     thread last_quarter([quarter, &pic, &cont, this]() {
-        for (int x = 3 * quarter; x < pic.getwidth() - 1; x++) {
+        for (int x = 3 * quarter; x < pic.getheight() - 1; x++) {
             for (int y = 1; y < pic.getwidth() - 1; y++) {
                 cont.setpixel(y, x, getaveragecol(pic, y, x));
             }

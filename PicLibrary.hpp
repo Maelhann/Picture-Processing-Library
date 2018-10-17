@@ -36,12 +36,8 @@ class PicLibrary {
      * I achieved the best performance when I split the image to blur in four sections, and delegated the blurring
      * of each section to a thread.
      *
-     * Each of these 4 subthreads concurrently computes the colour and blurs the pixels in each
-     * column by creating one thread per column or row (line by line optimization).
-     *
-     * I therefore eventually settled for a mix between section-wise optimization,
-     * since I'm splitting the picture in four sub-sections which I handle concurrently,
-     * and Line-By-Line, as all of the sections blur the columns of pixels concurrently.
+     * Initially each of my sub-section thread was computing the pixels concurrently, but the time it took to create
+     * the threads was not worth the time they saved. I thus reverted back to pure by-section optimization.
      *
      * I also implemented a check, to make sure we maximize the parallelization of the picture processing,
      * if there are more rows, than we compute concurrently row-by-row, otherwise we compute pixels column-by-column.
