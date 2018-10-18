@@ -14,7 +14,7 @@ class Picture {
     Mat img;
     Utils imgio;
     Mutex lock;
-    queue<tuple<int,string,string,int,char > tuple>; // this models an operation.
+    queue<tuple<int,string,string,int,char >> commands ; // this models an operation.
 
     // code functions to add tuples to the queue and pop.
     //
@@ -29,7 +29,7 @@ class Picture {
     //    lock.unlock ;
     //   }
 
-    // !! the locks are so the thread waits and also to avoir race conditions with the queue !!!! 
+    // !! the locks are so the thread waits and also to avoir race conditions with the queue !!!!
     // ----> need to add commands to picture's queue
     // ----> need to add sa
 
@@ -48,11 +48,6 @@ class Picture {
   // default constructor/deconstructor
   Picture();
   ~Picture(){};
-
-  void upcount();
-  void downcount();
-
-    int getWaitingThreads() const;
 
     // determine the dimensions of the underlying image
   int getwidth();

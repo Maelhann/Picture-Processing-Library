@@ -11,9 +11,7 @@ Picture::Picture(int width, int height) {
     img = imgio.createimage(width, height);
 }
 
-Picture::Picture() {
-    waitingThreads = 0;
-}
+Picture::Picture() {}
 
 
 void Picture::lockpicture() {
@@ -24,13 +22,6 @@ void Picture::unlockpicture() {
     lock.unlock();
 }
 
-void Picture::upcount() {
-    waitingThreads++;
-}
-
-void Picture::downcount() {
-    waitingThreads--;
-}
 
 int Picture::getwidth() {
     return img.size().width;
@@ -67,7 +58,5 @@ void Picture::setimage(Mat cpyimg) {
     img = imgio.copyimage(cpyimg);
 }
 
-int Picture::getWaitingThreads() const {
-    return waitingThreads;
-}
+
 
