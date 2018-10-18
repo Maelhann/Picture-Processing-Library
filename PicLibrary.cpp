@@ -1,9 +1,66 @@
 #include "PicLibrary.hpp"
 #include "Colour.hpp"
 #include "Utils.hpp"
+#include <tuple>
 
 
 using namespace std;
+
+void PicLibrary::operationhandler(int opcode, string filename, string aux, int angle, char plane) {
+    if (operations.empty()) {
+        operations.push(tuple<int, string, string, int, char>(opcode, filename, aux, angle, plane));
+        operationexecutenext();
+    } else {
+        operations.push(tuple<int, string, string, int, char>(opcode, filename, aux, angle, plane));
+    }
+}
+
+void PicLibrary::operationexecutenext() {
+    auto tuple = operations.front();
+    while (find(busyfiles.begin(), busyfiles.end(), get<1>(tuple)) != busyfiles.end()) {
+        // picture currently busy, pop this operation and put it at the back of the queue.
+        operations.pop();
+        operations.emplace(tuple);
+        tuple = operations.front();
+    }
+    switch (get<0>(tuple)) {
+        case 1 :
+            print_picturestore();
+            break;
+        case 2 :
+            loadpicture(get<2>(tuple), get<1>(tuple));
+            break;
+        case 3 :
+            unloadpicture(get<1>(tuple));
+            break;
+        case 4 :
+            savepicture(get<1>(tuple), get<2>(tuple));
+            break;
+        case 5 :
+            display(get<1>(tuple));
+            break;
+        case 6 :
+            concurrentinvert(get<1>(tuple));
+            break;
+        case 7 :
+            concurrentgrayscale(get<1>(tuple));
+            break;
+        case 8 :
+            concurrentrotate(get<3>(tuple), get<1>(tuple));
+            break;
+        case 9:
+            concurrentflip(get<4>(tuple), get<1>(tuple));
+            break;
+        case 10:
+            concurrentblur(get<1>(tuple));
+            break;
+        default:
+            operations.pop();
+            return;
+    }
+    operations.pop();
+}
+
 
 void PicLibrary::loadpicture(string path, string filename) {
     Picture picture = Picture(path);
@@ -456,11 +513,19 @@ void PicLibrary::blur(string filename) {
 
 
 void PicLibrary::concurrentinvert(string filename) {
+    busyfiles.push_back(filename);
+    operationexecutenext();
     active_threads.emplace_back(std::thread([this, filename]() {
         getpicture(filename).lockpicture();
         invert(filename);
         getpicture(filename).unlockpicture();
     }));
+    auto file = find(busyfiles.begin(), busyfiles.end(), filename);
+    if (file != busyfiles.end()) {
+        busyfiles.erase(file);
+    }
+    // operationexecutenext();
+    // JUST DO THAT FOR EVERYTHING AND THEN CHANGE MAIN TO CALL OPERATION HANDLER, YOU SHOULD BE GOLDEN. 
 }
 
 void PicLibrary::concurrentgrayscale(string filename) {

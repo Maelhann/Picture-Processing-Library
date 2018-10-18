@@ -6,6 +6,7 @@
 #include <mutex>
 #include <thread>
 #include <map>
+#include <queue>
 
 class PicLibrary {
 
@@ -78,7 +79,8 @@ private:
 
     std::map<string, Picture> store;
     vector<thread> active_threads;
-    int priority_level ;
+    queue<tuple<int, string, string,int, char>> operations;
+    vector<string> busyfiles;
 
 
 public:
@@ -87,6 +89,10 @@ public:
     ~PicLibrary() {};
 
     // command-line interpreter routines
+    void operationhandler(int opcode, string filename, string aux, int angle, char plane);
+
+    void operationexecutenext();
+
     void print_picturestore();
 
     bool isinlibrary(string filename);
