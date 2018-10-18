@@ -78,9 +78,8 @@ class PicLibrary {
 
 private:
 
-    std::map<string, Picture> store;
+    map<string, Picture> store;
     vector<thread> active_threads;
-    condition_variable cv ;
 
 public:
     PicLibrary() {};
@@ -88,7 +87,7 @@ public:
 
 
     // command-line interpreter routines
-    void addtransformation(string filename,int angle, char plane,int opcode);
+    void addtransformation(string filename, int angle, char plane, int opcode);
 
     void executenexttransformation(string filename);
 
@@ -105,6 +104,7 @@ public:
     void display(string filename);
 
     Picture getpicture(string filename);
+
 
     void setpicture(string filename, Picture picture);
 

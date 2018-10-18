@@ -9,46 +9,30 @@ using namespace std;
 void PicLibrary::loadpicture(string path, string filename) {
     Picture picture = Picture(path);
     store.insert(pair<string, Picture>(filename, picture));
-
-    /* active_threads.emplace_back(thread([this, filename]() {
-        while (isinlibrary(filename)) {
-            unique_lock<mutex> lck(synchronizer);
-            cv.wait(lck, [&] { return getpicture(filename).hasnext; });
-            executenexttransformation(filename);
-            lck.unlock();
-            cv.notify_one();
-        }
-    }));
-   */
-
-
 }
 
 void PicLibrary::executenexttransformation(string filename) {
-    tuple<int,char,int> tuple = getpicture(filename).getnexttransformation();
-    cout << get<2>(tuple);
-    switch (get<2>(tuple)){
+    tuple<int, char, int> tuple = getpicture(filename).queuegetnext();
+    switch (get<2>(tuple)) {
         case 6:
-            cout << "concurrent invert called";
-            concurrentinvert(filename);
+            invert(filename);
             break;
         case 7:
-            concurrentgrayscale(filename);
+            grayscale(filename);
             break;
         case 8 :
-            concurrentrotate(get<0>(tuple), filename);
+            rotate(get<0>(tuple), filename);
             break;
         case 9 :
-            concurrentflip(get<1>(tuple), filename);
+            flipVH(get<1>(tuple), filename);
             break;
         case 10 :
-            concurrentblur(filename);
+            blur(filename);
             break;
         default:
             break;
     }
-    getpicture(filename).popcommand();
-
+    getpicture(filename).queuepop();
 }
 
 bool PicLibrary::isinlibrary(string filename) {
@@ -260,7 +244,7 @@ void PicLibrary::pixelbypixelblur(string filename) {
     Picture pic = getpicture(filename);
     Picture cont = Picture(pic.getwidth(), pic.getheight());
     cont.setimage(pic.getimage());
-    vector<thread> threads;
+    vector <thread> threads;
     for (int x = 1; x < pic.getwidth() - 1; x++) {
         for (int y = 1; y < pic.getheight() - 1; y++) {
             threads.emplace_back(thread([&cont, &pic, x, y, this]() {
@@ -531,9 +515,9 @@ void PicLibrary::blur(string filename) {
 
 void PicLibrary::addtransformation(string filename, int angle, char plane, int opcode) {
     assert(isinlibrary(filename));
-    getpicture(filename).lockpicture();
-    getpicture(filename).addtocommandlist(angle,plane,opcode);
-    getpicture(filename).unlockpicture();
+    Picture pic = getpicture(filename);
+    pic.addcommand(angle, plane, opcode);
+    setpicture(filename, pic);
 }
 
 

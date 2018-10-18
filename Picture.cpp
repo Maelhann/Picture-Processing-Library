@@ -17,6 +17,8 @@ Picture::Picture() {
     hasnext = false;
 }
 
+
+
 void Picture::lockpicture() {
     lock.lock();
 }
@@ -26,25 +28,18 @@ void Picture::unlockpicture() {
 }
 
 
-void Picture::addtocommandlist(int angle, char plane, int opcode) {
-    commands.emplace(tuple<int,char,int>(angle,plane,opcode));
-    hasnext = true;
+tuple<int,char,int> Picture::queuegetnext() {
+    return queue.top();
 }
 
-
-void Picture::popcommand() {
-    commands.pop();
-    if (commands.empty()){
-        hasnext = false;
-    } else {
-        hasnext = true;
-    }
+void Picture::queuepop() {
+    queue.pop();
 }
 
-
-tuple<int, char, int> Picture::getnexttransformation() {
-    return commands.front();
+void Picture::addcommand(int angle, char plane, int opcode) {
+    queue.emplace(make_tuple(angle,plane,opcode));
 }
+
 
 int Picture::getwidth() {
     return img.size().width;

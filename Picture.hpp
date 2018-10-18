@@ -14,7 +14,7 @@ private:
     // opencv representation of an image
     Mat img;
     Utils imgio;
-    queue<tuple<int, char, int >> commands; // this models an operation.
+    priority_queue<tuple<int, char, int>> queue;
     Mutex lock;
 
     // code functions to add tuples to the queue and pop.
@@ -41,15 +41,16 @@ public:
         BLUE, GREEN, RED
     };
 
-    void addtocommandlist(int i, char plane, int op);
-
-    void popcommand();
 
     void lockpicture();
 
     void unlockpicture();
 
-    tuple<int, char, int> getnexttransformation();
+    void queuepop();
+
+    tuple<int, char, int> queuegetnext();
+
+    void addcommand(int, char, int);
 
     // class constructor, loads an image from a provided file
     Picture(string path);
