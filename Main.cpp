@@ -129,7 +129,7 @@ int main(int argc, char **argv) {
                             cout << "Error : Invalid angle of rotation" << endl;
                             break;
                         }
-                        lib.executenexttransformation(arg);
+                        lib.executenexttransformation(arg2);
                     } else {
                         cout << "Error : couldn't find any file with a matching name";
                     }
@@ -146,7 +146,7 @@ int main(int argc, char **argv) {
                             cout << "Error : Invalid plane specified" << endl;
                             break;
                         }
-                        lib.executenexttransformation(arg);
+                        lib.executenexttransformation(arg2);
                     } else {
                         cout << "Error : couldn't find any file with a matching name";
                     }
