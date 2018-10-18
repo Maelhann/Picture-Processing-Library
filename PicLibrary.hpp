@@ -79,21 +79,14 @@ private:
 
     std::map<string, Picture> store;
     vector<thread> active_threads;
-    queue<tuple<int, string, string,int, char>> operations;
-//    vector<string> busyfiles;
-
 
 public:
     PicLibrary() {};
 
     ~PicLibrary() {};
-    vector<string> busyfiles;
 
 
     // command-line interpreter routines
-    void operationhandler(int opcode, string filename, string aux, int angle, char plane);
-
-    void operationexecutenext();
 
     void print_picturestore();
 
