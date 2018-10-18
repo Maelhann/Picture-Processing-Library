@@ -64,7 +64,8 @@ int main(int argc, char **argv) {
                     arguments >> arg2;
                     if (arg.substr(arg.length() - 4) == ".jpg") {
                         if (!lib.isinlibrary(arg2)) {
-                            lib.loadpicture(arg, arg2);
+                            lib.operationhandler(command_index,arg2,arg,0,'n');
+
                         } else {
                             cout << "Error : file already loaded";
                         }
@@ -75,7 +76,7 @@ int main(int argc, char **argv) {
                 case 3 :
                     arguments >> arg;
                     if (lib.isinlibrary(arg)) {
-                        lib.unloadpicture(arg);
+                        lib.operationhandler(command_index,arg,"",0,'n');
                     } else {
                         cout << "Error : couldn't find any file with a matching name";
                     }
@@ -84,7 +85,7 @@ int main(int argc, char **argv) {
                     arguments >> arg;
                     arguments >> arg2;
                     if (lib.isinlibrary(arg)) {
-                        lib.savepicture(arg, arg2);
+                        lib.operationhandler(command_index,arg,arg2,0,'n');
                     } else {
                         cout << "Error : couldn't find any file with a matching name";
                     }
@@ -92,7 +93,7 @@ int main(int argc, char **argv) {
                 case 5 :
                     arguments >> arg;
                     if (lib.isinlibrary(arg)) {
-                        lib.display(arg);
+                        lib.operationhandler(command_index,arg,"",0,'n');
                     } else {
                         cout << "Error : couldn't find any file with a matching name";
                     }
@@ -100,7 +101,7 @@ int main(int argc, char **argv) {
                 case 6 :
                     arguments >> arg;
                     if (lib.isinlibrary(arg)) {
-                        lib.concurrentinvert(arg);
+                        lib.operationhandler(command_index,arg,"",0,'n');
                     } else {
                         cout << "Error : couldn't find any file with a matching name";
                     }
@@ -108,7 +109,7 @@ int main(int argc, char **argv) {
                 case 7 :
                     arguments >> arg;
                     if (lib.isinlibrary(arg)) {
-                        lib.concurrentgrayscale(arg);
+                        lib.operationhandler(command_index,arg,"",0,'n');
                     } else {
                         cout << "Error : couldn't find any file with a matching name";
                     }
@@ -118,11 +119,11 @@ int main(int argc, char **argv) {
                     arguments >> arg2;
                     if (lib.isinlibrary(arg2)) {
                         if (arg == "90") {
-                            lib.concurrentrotate(90, arg2);
+                            lib.operationhandler(command_index,arg2,"",90,'n');
                         } else if (arg == "180") {
-                            lib.concurrentrotate(180, arg2);
+                            lib.operationhandler(command_index,arg2,"",180,'n');
                         } else if (arg == "270") {
-                            lib.concurrentrotate(270, arg2);
+                            lib.operationhandler(command_index,arg2,"",0,'n');
                         } else {
                             cout << "Error : Invalid angle of rotation" << endl;
                         }
@@ -135,9 +136,9 @@ int main(int argc, char **argv) {
                     arguments >> arg2;
                     if (lib.isinlibrary(arg2)) {
                         if (arg == "H") {
-                            lib.concurrentflip('H', arg2);
+                            lib.operationhandler(command_index,arg2,"",0,'H');
                         } else if (arg == "V") {
-                            lib.concurrentflip('V', arg2);
+                            lib.operationhandler(command_index,arg2,"",0,'V');
                         } else {
                             cout << "Error : Invalid plane specified" << endl;
                         }

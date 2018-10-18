@@ -17,12 +17,6 @@ void PicLibrary::operationhandler(int opcode, string filename, string aux, int a
 
 void PicLibrary::operationexecutenext() {
     auto tuple = operations.front();
-    while (find(busyfiles.begin(), busyfiles.end(), get<1>(tuple)) != busyfiles.end()) {
-        // picture currently busy, pop this operation and put it at the back of the queue.
-        operations.pop();
-        operations.emplace(tuple);
-        tuple = operations.front();
-    }
     switch (get<0>(tuple)) {
         case 1 :
             print_picturestore();
@@ -65,6 +59,11 @@ void PicLibrary::operationexecutenext() {
 void PicLibrary::loadpicture(string path, string filename) {
     Picture picture = Picture(path);
     store.insert(pair<string, Picture>(filename, picture));
+    operations.pop();
+    if (!operations.empty()) {
+        operationexecutenext();
+    }
+
 }
 
 bool PicLibrary::isinlibrary(string filename) {
@@ -89,26 +88,43 @@ void PicLibrary::setpicture(string filename, Picture picture) {
     } else {
         picture_iter->second = picture;
     }
+
 }
 
 void PicLibrary::unloadpicture(string filename) {
     PicLibrary::store.erase(filename);
+    operations.pop();
+    if (!operations.empty()) {
+        operationexecutenext();
+    }
 }
 
 void PicLibrary::print_picturestore() {
     for (auto &a : store) {
         cout << endl << a.first;
     }
+    operations.pop();
+    if (!operations.empty()) {
+        operationexecutenext();
+    }
 }
 
 void PicLibrary::savepicture(string filename, string path) {
     Utils utils;
     utils.saveimage(getpicture(filename).getimage(), path);
+    operations.pop();
+    if (!operations.empty()) {
+        operationexecutenext();
+    }
 }
 
 void PicLibrary::display(string filename) {
     Utils utils;
     utils.displayimage(getpicture(filename).getimage());
+    operations.pop();
+    if (!operations.empty()) {
+        operationexecutenext();
+    }
 }
 
 
@@ -513,74 +529,66 @@ void PicLibrary::blur(string filename) {
 
 
 void PicLibrary::concurrentinvert(string filename) {
-    busyfiles.push_back(filename);
-    operationexecutenext();
     active_threads.emplace_back(std::thread([this, filename]() {
         getpicture(filename).lockpicture();
         invert(filename);
         getpicture(filename).unlockpicture();
     }));
-    auto file = find(busyfiles.begin(), busyfiles.end(), filename);
-    if (file != busyfiles.end()) {
-        busyfiles.erase(file);
+    operations.pop();
+    if (!operations.empty()) {
+        operationexecutenext();
     }
     // operationexecutenext();
     // JUST DO THAT FOR EVERYTHING AND THEN CHANGE MAIN TO CALL OPERATION HANDLER, YOU SHOULD BE GOLDEN.
 }
 
 void PicLibrary::concurrentgrayscale(string filename) {
-    busyfiles.push_back(filename);
-    operationexecutenext();
     active_threads.emplace_back(std::thread([this, filename]() {
         getpicture(filename).lockpicture();
         grayscale(filename);
         getpicture(filename).unlockpicture();
     }));
-    auto file = find(busyfiles.begin(), busyfiles.end(), filename);
-    if (file != busyfiles.end()) {
-        busyfiles.erase(file);
+    operations.pop();
+    if (!operations.empty()) {
+        operationexecutenext();
     }
+
 }
 
 void PicLibrary::concurrentrotate(int angle, string filename) {
-    busyfiles.push_back(filename);
-    operationexecutenext();
+
     active_threads.emplace_back(std::thread([this, angle, filename]() {
         getpicture(filename).lockpicture();
         rotate(angle, filename);
         getpicture(filename).unlockpicture();
     }));
-    auto file = find(busyfiles.begin(), busyfiles.end(), filename);
-    if (file != busyfiles.end()) {
-        busyfiles.erase(file);
+    operations.pop();
+    if (!operations.empty()) {
+        operationexecutenext();
     }
 }
 
 void PicLibrary::concurrentflip(char dir, string filename) {
-    busyfiles.push_back(filename);
-    operationexecutenext();
     active_threads.emplace_back(std::thread([this, dir, filename]() {
         getpicture(filename).lockpicture();
         flipVH(dir, filename);
         getpicture(filename).unlockpicture();
     }));
-    auto file = find(busyfiles.begin(), busyfiles.end(), filename);
-    if (file != busyfiles.end()) {
-        busyfiles.erase(file);
+    operations.pop();
+    if (!operations.empty()) {
+        operationexecutenext();
     }
 }
 
 void PicLibrary::concurrentblur(string filename) {
-    busyfiles.push_back(filename);
-    operationexecutenext();
     active_threads.emplace_back(std::thread([this, filename]() {
         getpicture(filename).lockpicture();
         blur(filename);
         getpicture(filename).unlockpicture();
     }));
-    auto file = find(busyfiles.begin(), busyfiles.end(), filename);
-    if (file != busyfiles.end()) {
-        busyfiles.erase(file);
+    operations.pop();
+    if (!operations.empty()) {
+        operationexecutenext();
     }
 }
 
