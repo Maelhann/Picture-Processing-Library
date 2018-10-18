@@ -14,9 +14,11 @@ class Picture {
     Mat img;
     Utils imgio;
     Mutex lock;
+    int waitingThreads;
 
   public:
-      
+
+
   enum RGB {BLUE, GREEN, RED};
   void lockpicture();
   void unlockpicture();
@@ -30,7 +32,12 @@ class Picture {
   Picture();
   ~Picture(){};
 
-  // determine the dimensions of the underlying image
+  void upcount();
+  void downcount();
+
+    int getWaitingThreads() const;
+
+    // determine the dimensions of the underlying image
   int getwidth();
   int getheight();
 

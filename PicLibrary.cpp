@@ -179,11 +179,13 @@ void PicLibrary::blur(string filename) {
     setpicture(filename, cont);
 }
 
+
 Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
     Colour avg = Colour(0, 0, 0);
     int rval = 0;
     int bval = 0;
     int gval = 0;
+    vector<thread> threads; 
     for (int i = x - 1; i < x + 2; i++) {
         rval += pic.getpixel(i, y - 1).getred() + pic.getpixel(i, y).getred()
                 + pic.getpixel(i, y + 1).getred();
@@ -198,6 +200,8 @@ Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
     avg.setgreen(gval / 9);
     return avg;
 }
+
+
 
 
 void PicLibrary::sequentialblur(string filename) {
