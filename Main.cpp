@@ -120,10 +120,9 @@ int main(int argc, char **argv) {
                     if (lib.isinlibrary(arg2)) {
                         if (arg == "90") {
                             lib.addtransformation(arg2, 90, 'a', command_index);
-
+                            lib.executenexttransformation(arg);
                         } else if (arg == "180") {
                             lib.addtransformation(arg2, 180, 'a', command_index);
-
                         } else if (arg == "270") {
                             lib.addtransformation(arg2, 270, 'a', command_index);
                         } else {

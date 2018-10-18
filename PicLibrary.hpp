@@ -92,7 +92,7 @@ public:
 
     void executenexttransformation(string filename);
 
-    void threadhandler();
+  
 
     void print_picturestore();
 

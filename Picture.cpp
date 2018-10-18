@@ -30,10 +30,6 @@ bool Picture::hasnextoperation() {
     return !queue.empty();
 }
 
-const priority_queue<tuple<int, char, int>> &Picture::getQueue() const {
-    return queue;
-}
-
 
 tuple<int, char, int> Picture::queuegetnext() {
     return queue.top();

@@ -85,8 +85,6 @@ public:
     // overwrite Picture image with another image
     void setimage(Mat cpyimg);
 
-    const priority_queue<tuple<int, char, int>> &getQueue() const;
-
 };
 
 #endif

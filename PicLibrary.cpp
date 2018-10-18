@@ -13,31 +13,27 @@ void PicLibrary::loadpicture(string path, string filename) {
 
 void PicLibrary::executenexttransformation(string filename) {
     tuple<int, char, int> tuple = getpicture(filename).queuegetnext();
+    int angle = get<0>(tuple);
+    char dir = get<1>(tuple);
     switch (get<2>(tuple)) {
         case 6:
-            invert(filename);
+            concurrentinvert(filename);
             break;
         case 7:
-            grayscale(filename);
+            concurrentgrayscale(filename);
             break;
-        case 8 :
-            rotate(get<0>(tuple), filename);
+        case 8:
+            concurrentrotate(angle, filename);
             break;
-        case 9 :
-            flipVH(get<1>(tuple), filename);
+        case 9:
+            concurrentflip(dir, filename);
             break;
-        case 10 :
-            blur(filename);
+        case 10:
+            concurrentblur(filename);
             break;
         default:
             break;
     }
-
-}
-
-void PicLibrary::threadhandler() {
-
-
 }
 
 bool PicLibrary::isinlibrary(string filename) {
@@ -528,41 +524,27 @@ void PicLibrary::addtransformation(string filename, int angle, char plane, int o
 
 void PicLibrary::concurrentinvert(string filename) {
     active_threads.emplace_back(std::thread([this, filename]() {
-        getpicture(filename).lockpicture();
         invert(filename);
-        getpicture(filename).unlockpicture();
     }));
 }
-
 void PicLibrary::concurrentgrayscale(string filename) {
     active_threads.emplace_back(std::thread([this, filename]() {
-        getpicture(filename).lockpicture();
         grayscale(filename);
-        getpicture(filename).unlockpicture();
     }));
 }
-
 void PicLibrary::concurrentrotate(int angle, string filename) {
     active_threads.emplace_back(std::thread([this, angle, filename]() {
-        getpicture(filename).lockpicture();
         rotate(angle, filename);
-        getpicture(filename).unlockpicture();
     }));
 }
-
 void PicLibrary::concurrentflip(char dir, string filename) {
     active_threads.emplace_back(std::thread([this, dir, filename]() {
-        getpicture(filename).lockpicture();
         flipVH(dir, filename);
-        getpicture(filename).unlockpicture();
     }));
 }
-
 void PicLibrary::concurrentblur(string filename) {
     active_threads.emplace_back(std::thread([this, filename]() {
-        getpicture(filename).lockpicture();
         blur(filename);
-        getpicture(filename).unlockpicture();
     }));
 }
 
