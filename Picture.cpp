@@ -1,4 +1,5 @@
 #include "Picture.hpp"
+#include <tuple>
 
 using namespace std;
 using namespace cv;
@@ -9,10 +10,12 @@ Picture::Picture(string path) {
 
 Picture::Picture(int width, int height) {
     img = imgio.createimage(width, height);
+    hasnext = false;
 }
 
-Picture::Picture() {}
-
+Picture::Picture() {
+    hasnext = false;
+}
 
 void Picture::lockpicture() {
     lock.lock();
@@ -22,6 +25,26 @@ void Picture::unlockpicture() {
     lock.unlock();
 }
 
+
+void Picture::addtocommandlist(int angle, char plane, int opcode) {
+    commands.emplace(tuple<int,char,int>(angle,plane,opcode));
+    hasnext = true;
+}
+
+
+void Picture::popcommand() {
+    commands.pop();
+    if (commands.empty()){
+        hasnext = false;
+    } else {
+        hasnext = true;
+    }
+}
+
+
+tuple<int, char, int> Picture::getnexttransformation() {
+    return commands.front();
+}
 
 int Picture::getwidth() {
     return img.size().width;

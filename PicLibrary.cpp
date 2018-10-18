@@ -9,6 +9,46 @@ using namespace std;
 void PicLibrary::loadpicture(string path, string filename) {
     Picture picture = Picture(path);
     store.insert(pair<string, Picture>(filename, picture));
+
+    /* active_threads.emplace_back(thread([this, filename]() {
+        while (isinlibrary(filename)) {
+            unique_lock<mutex> lck(synchronizer);
+            cv.wait(lck, [&] { return getpicture(filename).hasnext; });
+            executenexttransformation(filename);
+            lck.unlock();
+            cv.notify_one();
+        }
+    }));
+   */
+
+
+}
+
+void PicLibrary::executenexttransformation(string filename) {
+    tuple<int,char,int> tuple = getpicture(filename).getnexttransformation();
+    cout << get<2>(tuple);
+    switch (get<2>(tuple)){
+        case 6:
+            cout << "concurrent invert called";
+            concurrentinvert(filename);
+            break;
+        case 7:
+            concurrentgrayscale(filename);
+            break;
+        case 8 :
+            concurrentrotate(get<0>(tuple), filename);
+            break;
+        case 9 :
+            concurrentflip(get<1>(tuple), filename);
+            break;
+        case 10 :
+            concurrentblur(filename);
+            break;
+        default:
+            break;
+    }
+    getpicture(filename).popcommand();
+
 }
 
 bool PicLibrary::isinlibrary(string filename) {
@@ -181,8 +221,6 @@ void PicLibrary::blur(string filename) {
 }
 
 
-
-
 Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
     Colour avg = Colour(0, 0, 0);
     int rval = 0;
@@ -204,29 +242,6 @@ Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
     return avg;
 }
 
-
-
-
-/*
-Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
-    Colour avg = Colour(0, 0, 0);
-    int rval = 0;
-    int bval = 0;
-    int gval = 0;
-
-    for (int j = y - 1; j < y + 2; j++) {
-        for (int i = x - 1; i < x + 2; i++) {
-            rval += pic.getpixel(i, j).getred();
-            bval += pic.getpixel(i, j).getblue();
-            gval += pic.getpixel(i, j).getgreen();
-
-        }
-    }
-    avg.setred(rval / 9);
-    avg.setblue(bval / 9);
-    avg.setgreen(gval / 9);
-    return avg;
-}*/
 
 void PicLibrary::sequentialblur(string filename) {
     Picture pic = getpicture(filename);
@@ -446,8 +461,7 @@ void PicLibrary::blur(string filename) {
 
  }
 
- * LINE-BY-LINE OPTIMIZATION WITH AN IF CHECK TO OPTIMIZE NUMBER OF THREADS CREATED
- *  (we want to concurrently compute the rows or the columns depending on if there are more rows or columns.)
+ * LINE-BY-LINE OPTIMIZATION (LARGE SIDE)
  *
  * void PicLibrary::blur(string filename) {
     Picture pic = getpicture(filename);
@@ -478,9 +492,49 @@ void PicLibrary::blur(string filename) {
     }
     setpicture(filename, cont);
 
+    LINE-BY-LINE OPTIMIZATION (LITTLE SIDE)
+ *
+ * void PicLibrary::blur(string filename) {
+    Picture pic = getpicture(filename);
+    Picture cont = Picture(pic.getwidth(), pic.getheight());
+    vector<thread> optimization_threads;
+    cont.setimage(pic.getimage());
+
+    if (pic.getheight() < pic.getwidth()) {
+        for (int x = 1; x < pic.getheight() - 1; x++) {
+            optimization_threads.emplace_back(std::thread([this, x, &pic, &cont]() {
+                for (int y = 1; y < pic.getwidth() - 1; y++) {
+                    cont.setpixel(y, x, getaveragecol(pic, y, x));
+                }
+            }));
+        }
+    } else {
+        for (int x = 1; x < pic.getwidth() - 1; x++) {
+            optimization_threads.emplace_back(std::thread([this, x, &pic, &cont]() {
+                for (int y = 1; y < pic.getheight() - 1; y++) {
+                    cont.setpixel(x, y, getaveragecol(pic, x, y));
+                }
+            }));
+        }
+    }
+
+    for (thread &th : optimization_threads) {
+        th.join();
+    }
+    setpicture(filename, cont);
+
 }
  *
  * */
+
+
+
+void PicLibrary::addtransformation(string filename, int angle, char plane, int opcode) {
+    assert(isinlibrary(filename));
+    getpicture(filename).lockpicture();
+    getpicture(filename).addtocommandlist(angle,plane,opcode);
+    getpicture(filename).unlockpicture();
+}
 
 
 void PicLibrary::concurrentinvert(string filename) {

@@ -100,7 +100,8 @@ int main(int argc, char **argv) {
                 case 6 :
                     arguments >> arg;
                     if (lib.isinlibrary(arg)) {
-                        lib.concurrentinvert(arg);
+                        lib.addtransformation(arg, 0, 'a', command_index);
+                        lib.executenexttransformation(arg);
                     } else {
                         cout << "Error : couldn't find any file with a matching name";
                     }
@@ -108,7 +109,11 @@ int main(int argc, char **argv) {
                 case 7 :
                     arguments >> arg;
                     if (lib.isinlibrary(arg)) {
-                        lib.concurrentgrayscale(arg);
+                        //  lib.concurrentgrayscale(arg);
+                        lib.addtransformation(arg, 0, 'a', command_index);
+                        lib.executenexttransformation(arg);
+
+
                     } else {
                         cout << "Error : couldn't find any file with a matching name";
                     }
@@ -118,14 +123,20 @@ int main(int argc, char **argv) {
                     arguments >> arg2;
                     if (lib.isinlibrary(arg2)) {
                         if (arg == "90") {
-                            lib.concurrentrotate(90, arg2);
+                            //lib.concurrentrotate(90, arg2);
+                            lib.addtransformation(arg2, 90, 'a', command_index);
+
                         } else if (arg == "180") {
-                            lib.concurrentrotate(180, arg2);
+                            //lib.concurrentrotate(180, arg2);
+                            lib.addtransformation(arg2, 180, 'a', command_index);
+
                         } else if (arg == "270") {
-                            lib.concurrentrotate(270, arg2);
+                            lib.addtransformation(arg2, 270, 'a', command_index);
+                            //lib.concurrentrotate(270, arg2);
                         } else {
                             cout << "Error : Invalid angle of rotation" << endl;
                         }
+                        lib.executenexttransformation(arg2);
                     } else {
                         cout << "Error : couldn't find any file with a matching name";
                     }
@@ -135,12 +146,17 @@ int main(int argc, char **argv) {
                     arguments >> arg2;
                     if (lib.isinlibrary(arg2)) {
                         if (arg == "H") {
-                            lib.concurrentflip('H', arg2);
+                            //   lib.concurrentflip('H', arg2);
+                            lib.addtransformation(arg2, 0, 'H', command_index);
+                            lib.executenexttransformation(arg2);
                         } else if (arg == "V") {
-                            lib.concurrentflip('V', arg2);
+                            //lib.concurrentflip('V', arg2);
+                            lib.addtransformation(arg2, 0, 'V', command_index);
+                            lib.executenexttransformation(arg2);
                         } else {
                             cout << "Error : Invalid plane specified" << endl;
                         }
+
                     } else {
                         cout << "Error : couldn't find any file with a matching name";
                     }
@@ -148,7 +164,9 @@ int main(int argc, char **argv) {
                 case 10 :
                     arguments >> arg;
                     if (lib.isinlibrary(arg)) {
-                        lib.concurrentblur(arg);
+                        //lib.concurrentblur(arg);
+                        lib.addtransformation(arg, 0, 'a', command_index);
+                        lib.executenexttransformation(arg);
                     } else {
                         cout << "Error : couldn't find any file with a matching name";
                     }

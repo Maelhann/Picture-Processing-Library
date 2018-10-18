@@ -7,6 +7,7 @@
 #include <thread>
 #include <map>
 #include <queue>
+#include <condition_variable>
 
 class PicLibrary {
 
@@ -79,14 +80,17 @@ private:
 
     std::map<string, Picture> store;
     vector<thread> active_threads;
+    condition_variable cv ;
 
 public:
     PicLibrary() {};
-
     ~PicLibrary() {};
 
 
     // command-line interpreter routines
+    void addtransformation(string filename,int angle, char plane,int opcode);
+
+    void executenexttransformation(string filename);
 
     void print_picturestore();
 
