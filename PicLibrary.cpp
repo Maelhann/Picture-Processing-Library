@@ -1,69 +1,13 @@
 #include "PicLibrary.hpp"
 #include "Colour.hpp"
 #include "Utils.hpp"
-#include <tuple>
 
 
 using namespace std;
 
-void PicLibrary::operationhandler(int opcode, string filename, string aux, int angle, char plane) {
-    if (operations.empty()) {
-        operations.push(tuple<int, string, string, int, char>(opcode, filename, aux, angle, plane));
-        operationexecutenext();
-    } else {
-        operations.push(tuple<int, string, string, int, char>(opcode, filename, aux, angle, plane));
-    }
-}
-
-void PicLibrary::operationexecutenext() {
-    auto tuple = operations.front();
-    switch (get<0>(tuple)) {
-        case 1 :
-            print_picturestore();
-            break;
-        case 2 :
-            loadpicture(get<2>(tuple), get<1>(tuple));
-            break;
-        case 3 :
-            unloadpicture(get<1>(tuple));
-            break;
-        case 4 :
-            savepicture(get<1>(tuple), get<2>(tuple));
-            break;
-        case 5 :
-            display(get<1>(tuple));
-            break;
-        case 6 :
-            concurrentinvert(get<1>(tuple));
-            break;
-        case 7 :
-            concurrentgrayscale(get<1>(tuple));
-            break;
-        case 8 :
-            concurrentrotate(get<3>(tuple), get<1>(tuple));
-            break;
-        case 9:
-            concurrentflip(get<4>(tuple), get<1>(tuple));
-            break;
-        case 10:
-            concurrentblur(get<1>(tuple));
-            break;
-        default:
-            operations.pop();
-            return;
-    }
-    operations.pop();
-}
-
-
 void PicLibrary::loadpicture(string path, string filename) {
     Picture picture = Picture(path);
     store.insert(pair<string, Picture>(filename, picture));
-    operations.pop();
-    if (!operations.empty()) {
-        operationexecutenext();
-    }
-
 }
 
 bool PicLibrary::isinlibrary(string filename) {
@@ -88,43 +32,26 @@ void PicLibrary::setpicture(string filename, Picture picture) {
     } else {
         picture_iter->second = picture;
     }
-
 }
 
 void PicLibrary::unloadpicture(string filename) {
     PicLibrary::store.erase(filename);
-    operations.pop();
-    if (!operations.empty()) {
-        operationexecutenext();
-    }
 }
 
 void PicLibrary::print_picturestore() {
     for (auto &a : store) {
         cout << endl << a.first;
     }
-    operations.pop();
-    if (!operations.empty()) {
-        operationexecutenext();
-    }
 }
 
 void PicLibrary::savepicture(string filename, string path) {
     Utils utils;
     utils.saveimage(getpicture(filename).getimage(), path);
-    operations.pop();
-    if (!operations.empty()) {
-        operationexecutenext();
-    }
 }
 
 void PicLibrary::display(string filename) {
     Utils utils;
     utils.displayimage(getpicture(filename).getimage());
-    operations.pop();
-    if (!operations.empty()) {
-        operationexecutenext();
-    }
 }
 
 
@@ -534,12 +461,6 @@ void PicLibrary::concurrentinvert(string filename) {
         invert(filename);
         getpicture(filename).unlockpicture();
     }));
-    operations.pop();
-    if (!operations.empty()) {
-        operationexecutenext();
-    }
-    // operationexecutenext();
-    // JUST DO THAT FOR EVERYTHING AND THEN CHANGE MAIN TO CALL OPERATION HANDLER, YOU SHOULD BE GOLDEN.
 }
 
 void PicLibrary::concurrentgrayscale(string filename) {
@@ -548,24 +469,14 @@ void PicLibrary::concurrentgrayscale(string filename) {
         grayscale(filename);
         getpicture(filename).unlockpicture();
     }));
-    operations.pop();
-    if (!operations.empty()) {
-        operationexecutenext();
-    }
-
 }
 
 void PicLibrary::concurrentrotate(int angle, string filename) {
-
     active_threads.emplace_back(std::thread([this, angle, filename]() {
         getpicture(filename).lockpicture();
         rotate(angle, filename);
         getpicture(filename).unlockpicture();
     }));
-    operations.pop();
-    if (!operations.empty()) {
-        operationexecutenext();
-    }
 }
 
 void PicLibrary::concurrentflip(char dir, string filename) {
@@ -574,10 +485,6 @@ void PicLibrary::concurrentflip(char dir, string filename) {
         flipVH(dir, filename);
         getpicture(filename).unlockpicture();
     }));
-    operations.pop();
-    if (!operations.empty()) {
-        operationexecutenext();
-    }
 }
 
 void PicLibrary::concurrentblur(string filename) {
@@ -586,10 +493,6 @@ void PicLibrary::concurrentblur(string filename) {
         blur(filename);
         getpicture(filename).unlockpicture();
     }));
-    operations.pop();
-    if (!operations.empty()) {
-        operationexecutenext();
-    }
 }
 
 
@@ -602,7 +505,3 @@ void PicLibrary::jointhreads() {
 
 }
 
- 
-
-
- 
