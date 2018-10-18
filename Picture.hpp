@@ -17,23 +17,6 @@ private:
     priority_queue<tuple<int, char, int>> queue;
     Mutex lock;
 
-    // code functions to add tuples to the queue and pop.
-    //
-    // don't create a thread every time --- try this.
-    // on each load, create a thread t
-    // t {
-
-    //   while(picture list of commands not empty)
-    //    lock.lock ;
-    //    run command at the head of the queue;
-    //    pop queue;
-    //    lock.unlock ;
-    //   }
-
-    // !! the locks are so the thread waits and also to avoir race conditions with the queue !!!!
-    // ----> need to add commands to picture's queue
-    // ----> need to add sa
-
 public:
     bool hasnext;
 

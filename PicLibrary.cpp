@@ -8,13 +8,17 @@ using namespace std;
 
 void PicLibrary::loadpicture(string path, string filename) {
     Picture picture = Picture(path);
-    store.insert(pair<string, Picture>(filename, picture));
+    active_threads.emplace_back(thread([filename, picture, this]() {
+        store.insert(pair<string, Picture>(filename, picture));
+    }));
 }
 
 void PicLibrary::executenexttransformation(string filename) {
     tuple<int, char, int> tuple = getpicture(filename).queuegetnext();
     int angle = get<0>(tuple);
     char dir = get<1>(tuple);
+
+    getpicture(filename).lockpicture();
     switch (get<2>(tuple)) {
         case 6:
             concurrentinvert(filename);
@@ -34,6 +38,8 @@ void PicLibrary::executenexttransformation(string filename) {
         default:
             break;
     }
+    getpicture(filename).unlockpicture();
+    getpicture(filename).queuepop();
 }
 
 bool PicLibrary::isinlibrary(string filename) {
@@ -264,7 +270,7 @@ void PicLibrary::pixelbypixelblur(string filename) {
 
 /* PREVIOUS BLUR ATTEMPTS
  *
- * OPTIMIZATION BY SPLITTING INTO SECTIONS OF 4 COLUMNS AND CONCURRENTLY COMPUTING ROW BY ROW
+ * OPTIMIZATION BY SPLITTING INTO 4 SECTIONS OF COLUMNS AND CONCURRENTLY COMPUTING ROW BY ROW
  *
  * void PicLibrary::blur(string filename) {
     Picture pic = getpicture(filename);
@@ -527,21 +533,25 @@ void PicLibrary::concurrentinvert(string filename) {
         invert(filename);
     }));
 }
+
 void PicLibrary::concurrentgrayscale(string filename) {
     active_threads.emplace_back(std::thread([this, filename]() {
         grayscale(filename);
     }));
 }
+
 void PicLibrary::concurrentrotate(int angle, string filename) {
     active_threads.emplace_back(std::thread([this, angle, filename]() {
         rotate(angle, filename);
     }));
 }
+
 void PicLibrary::concurrentflip(char dir, string filename) {
     active_threads.emplace_back(std::thread([this, dir, filename]() {
         flipVH(dir, filename);
     }));
 }
+
 void PicLibrary::concurrentblur(string filename) {
     active_threads.emplace_back(std::thread([this, filename]() {
         blur(filename);
