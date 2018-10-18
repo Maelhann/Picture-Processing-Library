@@ -180,28 +180,9 @@ void PicLibrary::blur(string filename) {
     setpicture(filename, cont);
 }
 
-Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
-    Colour avg = Colour(0, 0, 0);
-    int rval = 0;
-    int bval = 0;
-    int gval = 0;
 
-    for (int j = y - 1; j < y + 2; j++) {
-        rval += pic.getpixel(x - 1, j).getred() + pic.getpixel(x, j).getred()
-                + pic.getpixel(x + 1, j).getred();
-        bval += pic.getpixel(x - 1, j).getblue() + pic.getpixel(x, j).getblue()
-                + pic.getpixel(x + 1, j).getblue();
-        gval += pic.getpixel(x - 1, j).getgreen() + pic.getpixel(x, j).getgreen()
-                + pic.getpixel(x + 1, j).getgreen();
 
-    }
-    avg.setred(rval / 9);
-    avg.setblue(bval / 9);
-    avg.setgreen(gval / 9);
-    return avg;
-}
 
-/*
 Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
     Colour avg = Colour(0, 0, 0);
     int rval = 0;
@@ -222,7 +203,7 @@ Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
     avg.setgreen(gval / 9);
     return avg;
 }
- */
+
 
 
 

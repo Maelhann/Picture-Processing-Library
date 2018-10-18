@@ -14,7 +14,17 @@ class Picture {
     Mat img;
     Utils imgio;
     Mutex lock;
-    int waitingThreads;
+    queue<tuple<int,string,string,int,char > tuple>; // this models an operation.
+
+    // code functions to add tuples to the queue and pop.
+    //
+    // don't create a thread every time --- try this.
+    // on each load, create a thread t
+    // t {
+    //   while filename you just loaded is in library
+    //    run command at the head of the queue
+    //    pop queue.
+    //   }
 
   public:
 
