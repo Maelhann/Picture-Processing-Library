@@ -32,7 +32,12 @@ void PicLibrary::executenexttransformation(string filename) {
         default:
             break;
     }
-    getpicture(filename).queuepop();
+
+}
+
+void PicLibrary::threadhandler() {
+
+
 }
 
 bool PicLibrary::isinlibrary(string filename) {
@@ -244,7 +249,7 @@ void PicLibrary::pixelbypixelblur(string filename) {
     Picture pic = getpicture(filename);
     Picture cont = Picture(pic.getwidth(), pic.getheight());
     cont.setimage(pic.getimage());
-    vector <thread> threads;
+    vector<thread> threads;
     for (int x = 1; x < pic.getwidth() - 1; x++) {
         for (int y = 1; y < pic.getheight() - 1; y++) {
             threads.emplace_back(thread([&cont, &pic, x, y, this]() {

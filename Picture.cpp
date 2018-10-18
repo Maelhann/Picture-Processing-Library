@@ -18,7 +18,6 @@ Picture::Picture() {
 }
 
 
-
 void Picture::lockpicture() {
     lock.lock();
 }
@@ -27,8 +26,16 @@ void Picture::unlockpicture() {
     lock.unlock();
 }
 
+bool Picture::hasnextoperation() {
+    return !queue.empty();
+}
 
-tuple<int,char,int> Picture::queuegetnext() {
+const priority_queue<tuple<int, char, int>> &Picture::getQueue() const {
+    return queue;
+}
+
+
+tuple<int, char, int> Picture::queuegetnext() {
     return queue.top();
 }
 
@@ -37,7 +44,7 @@ void Picture::queuepop() {
 }
 
 void Picture::addcommand(int angle, char plane, int opcode) {
-    queue.emplace(make_tuple(angle,plane,opcode));
+    queue.emplace(make_tuple(angle, plane, opcode));
 }
 
 

@@ -37,7 +37,6 @@ int main(int argc, char **argv) {
         lib.loadpicture(argv[i], img_name);
     }
 
-
     while (true) {
         cout << endl << "> ";
         string command;
@@ -101,6 +100,7 @@ int main(int argc, char **argv) {
                     arguments >> arg;
                     if (lib.isinlibrary(arg)) {
                         lib.addtransformation(arg, 0, 'a', command_index);
+                        lib.executenexttransformation(arg);
                     } else {
                         cout << "Error : couldn't find any file with a matching name";
                     }
@@ -108,8 +108,8 @@ int main(int argc, char **argv) {
                 case 7 :
                     arguments >> arg;
                     if (lib.isinlibrary(arg)) {
-                        //  lib.concurrentgrayscale(arg);
                         lib.addtransformation(arg, 0, 'a', command_index);
+                        lib.executenexttransformation(arg);
                     } else {
                         cout << "Error : couldn't find any file with a matching name";
                     }
@@ -128,7 +128,9 @@ int main(int argc, char **argv) {
                             lib.addtransformation(arg2, 270, 'a', command_index);
                         } else {
                             cout << "Error : Invalid angle of rotation" << endl;
+                            break;
                         }
+                        lib.executenexttransformation(arg);
                     } else {
                         cout << "Error : couldn't find any file with a matching name";
                     }
@@ -143,8 +145,9 @@ int main(int argc, char **argv) {
                             lib.addtransformation(arg2, 0, 'V', command_index);
                         } else {
                             cout << "Error : Invalid plane specified" << endl;
+                            break;
                         }
-
+                        lib.executenexttransformation(arg);
                     } else {
                         cout << "Error : couldn't find any file with a matching name";
                     }
@@ -153,6 +156,7 @@ int main(int argc, char **argv) {
                     arguments >> arg;
                     if (lib.isinlibrary(arg)) {
                         lib.addtransformation(arg, 0, 'a', command_index);
+                        lib.executenexttransformation(arg);
                     } else {
                         cout << "Error : couldn't find any file with a matching name";
                     }

@@ -83,6 +83,7 @@ private:
 
 public:
     PicLibrary() {};
+
     ~PicLibrary() {};
 
 
@@ -90,6 +91,8 @@ public:
     void addtransformation(string filename, int angle, char plane, int opcode);
 
     void executenexttransformation(string filename);
+
+    void threadhandler();
 
     void print_picturestore();
 

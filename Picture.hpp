@@ -50,6 +50,8 @@ public:
 
     tuple<int, char, int> queuegetnext();
 
+    bool hasnextoperation();
+
     void addcommand(int, char, int);
 
     // class constructor, loads an image from a provided file
@@ -82,6 +84,8 @@ public:
 
     // overwrite Picture image with another image
     void setimage(Mat cpyimg);
+
+    const priority_queue<tuple<int, char, int>> &getQueue() const;
 
 };
 
