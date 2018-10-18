@@ -525,39 +525,63 @@ void PicLibrary::concurrentinvert(string filename) {
         busyfiles.erase(file);
     }
     // operationexecutenext();
-    // JUST DO THAT FOR EVERYTHING AND THEN CHANGE MAIN TO CALL OPERATION HANDLER, YOU SHOULD BE GOLDEN. 
+    // JUST DO THAT FOR EVERYTHING AND THEN CHANGE MAIN TO CALL OPERATION HANDLER, YOU SHOULD BE GOLDEN.
 }
 
 void PicLibrary::concurrentgrayscale(string filename) {
+    busyfiles.push_back(filename);
+    operationexecutenext();
     active_threads.emplace_back(std::thread([this, filename]() {
         getpicture(filename).lockpicture();
         grayscale(filename);
         getpicture(filename).unlockpicture();
     }));
+    auto file = find(busyfiles.begin(), busyfiles.end(), filename);
+    if (file != busyfiles.end()) {
+        busyfiles.erase(file);
+    }
 }
 
 void PicLibrary::concurrentrotate(int angle, string filename) {
+    busyfiles.push_back(filename);
+    operationexecutenext();
     active_threads.emplace_back(std::thread([this, angle, filename]() {
         getpicture(filename).lockpicture();
         rotate(angle, filename);
         getpicture(filename).unlockpicture();
     }));
+    auto file = find(busyfiles.begin(), busyfiles.end(), filename);
+    if (file != busyfiles.end()) {
+        busyfiles.erase(file);
+    }
 }
 
 void PicLibrary::concurrentflip(char dir, string filename) {
+    busyfiles.push_back(filename);
+    operationexecutenext();
     active_threads.emplace_back(std::thread([this, dir, filename]() {
         getpicture(filename).lockpicture();
         flipVH(dir, filename);
         getpicture(filename).unlockpicture();
     }));
+    auto file = find(busyfiles.begin(), busyfiles.end(), filename);
+    if (file != busyfiles.end()) {
+        busyfiles.erase(file);
+    }
 }
 
 void PicLibrary::concurrentblur(string filename) {
+    busyfiles.push_back(filename);
+    operationexecutenext();
     active_threads.emplace_back(std::thread([this, filename]() {
         getpicture(filename).lockpicture();
         blur(filename);
         getpicture(filename).unlockpicture();
     }));
+    auto file = find(busyfiles.begin(), busyfiles.end(), filename);
+    if (file != busyfiles.end()) {
+        busyfiles.erase(file);
+    }
 }
 
 
