@@ -5,6 +5,7 @@
 
 using namespace std;
 
+
 void PicLibrary::loadpicture(string path, string filename) {
     Picture picture = Picture(path);
     store.insert(pair<string, Picture>(filename, picture));
@@ -179,13 +180,34 @@ void PicLibrary::blur(string filename) {
     setpicture(filename, cont);
 }
 
+Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
+    Colour avg = Colour(0, 0, 0);
+    int rval = 0;
+    int bval = 0;
+    int gval = 0;
+
+    for (int j = x - 1; j < x + 2; j++) {
+        rval += pic.getpixel(x - 1, j).getred() + pic.getpixel(x, j).getred()
+                + pic.getpixel(x + 1, j).getred();
+        bval += pic.getpixel(x - 1, j).getblue() + pic.getpixel(x, j).getblue()
+                + pic.getpixel(x + 1, j).getblue();
+        gval += pic.getpixel(x - 1, j).getgreen() + pic.getpixel(x, j).getgreen()
+                + pic.getpixel(x + 1, j).getgreen();
+
+    }
+    avg.setred(rval / 9);
+    avg.setblue(bval / 9);
+    avg.setgreen(gval / 9);
+    return avg;
+}
+
 /*
 Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
     Colour avg = Colour(0, 0, 0);
     int rval = 0;
     int bval = 0;
     int gval = 0;
-    //vector<thread> threads;
+
     for (int i = x - 1; i < x + 2; i++) {
         rval += pic.getpixel(i, y - 1).getred() + pic.getpixel(i, y).getred()
                 + pic.getpixel(i, y + 1).getred();
@@ -200,9 +222,11 @@ Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
     avg.setgreen(gval / 9);
     return avg;
 }
+ */
 
-*/
 
+
+/*
 Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
     Colour avg = Colour(0, 0, 0);
     int rval = 0;
@@ -221,7 +245,7 @@ Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
     avg.setblue(bval / 9);
     avg.setgreen(gval / 9);
     return avg;
-}
+}*/
 
 void PicLibrary::sequentialblur(string filename) {
     Picture pic = getpicture(filename);
