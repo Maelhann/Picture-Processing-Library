@@ -186,7 +186,7 @@ Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
     int bval = 0;
     int gval = 0;
 
-    for (int j = x - 1; j < x + 2; j++) {
+    for (int j = y - 1; j < y + 2; j++) {
         rval += pic.getpixel(x - 1, j).getred() + pic.getpixel(x, j).getred()
                 + pic.getpixel(x + 1, j).getred();
         bval += pic.getpixel(x - 1, j).getblue() + pic.getpixel(x, j).getblue()
