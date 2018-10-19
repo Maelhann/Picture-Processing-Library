@@ -80,6 +80,7 @@ private:
 
     map<string, Picture> store;
     vector<thread> active_threads;
+    Utils utils;
 
 public:
     PicLibrary() {};
@@ -92,7 +93,6 @@ public:
 
     void executenexttransformation(string filename);
 
-  
 
     void print_picturestore();
 

@@ -67,7 +67,10 @@ void PicLibrary::setpicture(string filename, Picture picture) {
 }
 
 void PicLibrary::unloadpicture(string filename) {
-    PicLibrary::store.erase(filename);
+    active_threads.emplace_back(thread([this, filename]() {
+        PicLibrary::store.erase(filename);
+
+    }));
 }
 
 void PicLibrary::print_picturestore() {
@@ -77,12 +80,12 @@ void PicLibrary::print_picturestore() {
 }
 
 void PicLibrary::savepicture(string filename, string path) {
-    Utils utils;
-    utils.saveimage(getpicture(filename).getimage(), path);
+    active_threads.emplace_back(thread([this, path, filename]() {
+        utils.saveimage(getpicture(filename).getimage(), path);
+    }));
 }
 
 void PicLibrary::display(string filename) {
-    Utils utils;
     utils.displayimage(getpicture(filename).getimage());
 }
 
