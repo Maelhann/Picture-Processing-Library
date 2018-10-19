@@ -170,7 +170,7 @@ void PicLibrary::flipVH(char plane, string filename) {
 }
 
 
-void PicLibrary::blur2(string filename) {
+void PicLibrary::blur(string filename) {
     /* ALTERNATIVE IMPLEMENTATIONS COMMENTED AT END OF FILE */
     Picture pic = getpicture(filename);
     Picture cont = Picture(pic.getwidth(), pic.getheight());
@@ -273,7 +273,6 @@ void PicLibrary::addtransformation(string filename, int angle, char plane, int o
     setpicture(filename, pic);
 }
 
-
 void PicLibrary::concurrentinvert(string filename) {
     active_threads.emplace_back(std::thread([this, filename]() {
         invert(filename);
@@ -314,78 +313,7 @@ void PicLibrary::jointhreads() {
 
 }
 
-void PicLibrary::blur(string filename) {
-    Picture pic = getpicture(filename);
-    Picture cont = Picture(pic.getwidth(), pic.getheight());
-    int eigthheight = pic.getheight() / 4;
-    int eigthwidth = pic.getwidth() / 2;
-    cont.setimage(getpicture(filename).getimage());
-    thread first_eighth([eigthwidth, eigthheight, &pic, &cont, this]() {
-        for (int y = 1; y < eigthwidth; y++) {
-            for (int x = 1; x < eigthheight; x++) {
-                cont.setpixel(y, x, getaveragecol(pic, y, x));
-            }
-        }
-    });
-    thread second_eighth([eigthwidth, eigthheight, &pic, &cont, this]() {
-        for (int y = 1; y < eigthwidth; y++) {
-            for (int x = eigthheight; x < 2 * eigthheight; x++) {
-                cont.setpixel(y, x, getaveragecol(pic, y, x));
-            }
-        }
-    });
-    thread third_eighth([eigthwidth, eigthheight, &pic, &cont, this]() {
-        for (int y = 1; y < eigthwidth; y++) {
-            for (int x = 2 * eigthheight; x < 3 * eigthheight; x++) {
-                cont.setpixel(y, x, getaveragecol(pic, y, x));
-            }
-        }
-    });
-    thread fourth_eighth([eigthwidth, eigthheight, &pic, &cont, this]() {
-        for (int y = 1; y < eigthwidth; y++) {
-            for (int x = 3 * eigthheight; x < pic.getheight() - 1; x++) {
-                cont.setpixel(y, x, getaveragecol(pic, y, x));
-            }
-        }
-    });
-    thread fifth_eighth([eigthwidth, eigthheight, &pic, &cont, this]() {
-        for (int y = eigthwidth; y < pic.getwidth() - 1; y++) {
-            for (int x = 1; x < eigthheight; x++) {
-                cont.setpixel(y, x, getaveragecol(pic, y, x));
-            }
-        }
-    });
-    thread sixth_eighth([eigthwidth, eigthheight, &pic, &cont, this]() {
-        for (int y = eigthwidth; y < pic.getwidth() - 1; y++) {
-            for (int x = eigthheight; x < 2 * eigthheight; x++) {
-                cont.setpixel(y, x, getaveragecol(pic, y, x));
-            }
-        }
-    });
-    thread seventh_eighth([eigthwidth, eigthheight, &pic, &cont, this]() {
-        for (int y = eigthwidth; y < pic.getwidth() - 1; y++) {
-            for (int x = 2 * eigthheight; x < 3 * eigthheight; x++) {
-                cont.setpixel(y, x, getaveragecol(pic, y, x));
-            }
-        }
-    });
-    thread last_eighth([eigthwidth, eigthheight, &pic, &cont, this]() {
-        for (int y = eigthwidth; y < pic.getwidth()-1; y++) {
-            for (int x = 3 * eigthheight; x < pic.getheight() - 1; x++) {
-                cont.setpixel(y, x, getaveragecol(pic, y, x));
-            }
-        }
-    });
-    first_eighth.join();
-    second_eighth.join();
-    third_eighth.join();
-    fourth_eighth.join();
-    fifth_eighth.join();
-    sixth_eighth.join();
-    seventh_eighth.join();
-    last_eighth.join();
-    setpicture(filename, cont);
-}
+
 
 /* PREVIOUS BLUR IMPLEMENTATION AND EXPERIMENTS
  *
