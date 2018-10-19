@@ -10,12 +10,9 @@ Picture::Picture(string path) {
 
 Picture::Picture(int width, int height) {
     img = imgio.createimage(width, height);
-    hasnext = false;
 }
 
-Picture::Picture() {
-    hasnext = false;
-}
+Picture::Picture() {}
 
 
 void Picture::lockpicture() {
@@ -25,11 +22,6 @@ void Picture::lockpicture() {
 void Picture::unlockpicture() {
     lock.unlock();
 }
-
-bool Picture::hasnextoperation() {
-    return !queue.empty();
-}
-
 
 tuple<int, char, int> Picture::queuegetnext() {
     return queue.top();

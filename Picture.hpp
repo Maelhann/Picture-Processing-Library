@@ -18,8 +18,6 @@ private:
     Mutex lock;
 
 public:
-    bool hasnext;
-
     enum RGB {
         BLUE, GREEN, RED
     };
@@ -32,8 +30,6 @@ public:
     void queuepop();
 
     tuple<int, char, int> queuegetnext();
-
-    bool hasnextoperation();
 
     void addcommand(int, char, int);
 

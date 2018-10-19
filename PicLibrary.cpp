@@ -225,7 +225,7 @@ void PicLibrary::blur(string filename) {
         }
     });
     thread last_eighth([eigthwidth, eigthheight, &pic, &cont, this]() {
-        for (int y = eigthwidth; y < pic.getwidth(); y++) {
+        for (int y = eigthwidth; y < pic.getwidth()-1; y++) {
             for (int x = 3 * eigthheight; x < pic.getheight() - 1; x++) {
                 cont.setpixel(y, x, getaveragecol(pic, y, x));
             }
