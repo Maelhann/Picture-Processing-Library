@@ -13,48 +13,37 @@ class PicLibrary {
 
     /* THREAD-SAFETY OF THE PICLIBRARY CLASS :
      *
-     * My synchronization strategy works as follow, each Picture holds a queue of commands, which I modeled with
-     * tuples
+     *I chose my synchronization strategy after having implemented and carefully thought about other strategies,
      *
+     * Using a global mutex lock for the library and locking at each transformation
+     * was a lot less efficient despite being much easier to implement.
+     * The cost of locking was too high and mobilized the whole library, making the program in effect sequential.
+     * It also didn't ensure that operations were executed in order.
      *
+     * Picture locking and creating a thread for each function transformation fixed the concurrency problem,
+     * but still wasn't enough to ensure operations were executed in the right order. Following this observation I came
+     * up with my own synchronization system.
      *
-     * OPTIMIZATION OF THE BLUR FUNCTION :
+     * MY FINAL SYNCHRONIZATION STRATEGY WORKS AS FOLLOW :
      *
-     * I experimented and pushed multiple implementations for the blur() and getAverageCol() functions,
-     * I achieved the best performance when I split the image to blur in four squares
-     * 2d sections, and delegated the blurring
-     * of each section to a thread.
+     * Each Picture holds a queue of commands, which I modeled as a priority queue of <int,char,int> tuples.
+     * for each tuple the first int represents an optional angle, the char represents an optional plane, and the last
+     * int represents an opcode.
      *
-     * I have experimented with multiple optimization techniques including :
-     *  - Row by Row
-     *  - Column by Column
-     *  - Cutting up the Image in rows and blurring these row-sections concurrently
-     *  - Concurrently blurring half of each pictures
-     *  - Concurrently blurring quarters of each pictures
-     *  - Mixing Halving and Line by Line optimization.
+     * When the interpreter receives a picture transformation command for picture P
+     * it pushes a tuple representing this command at the back of P's priorityqueue, and then calls our
+     * library to execute the next transformation on P (that is, to process the tuple at the top of P's priorityqueue)
      *
-     *  I also created, for each of these versions of blur, an alternative one with an if-check, that switches
-     *  the type of optimization (for line by line) depending on wether or not we have more rows or columns.
-     *  (in case of very disproportionate pictures)
+     * The library then retrieves the tuple at the top of P's priority queue and applies the right transformation to it
+     * using the information stored in the tuple. It then finishes by popping this command off the top of the queue.
+     * This strategy ensures that all transformations made to a picture are applied in the order in which they were
+     * given
      *
-     *  Here are a few of my observations regarding the speed of my program with these different methods :
+     * Additionally, since my picture transformation functions operate concurrently
+     * with their own threads referenced in the active_threads vector declared in PicLibrary
+     * , I have equipped each picture with a Mutex lock to ensure exclusive access to the picture for each of
+     * my transformation functions and avoid potential race conditions.
      *
-     * Concurrently blurring line by line significantly boosts the speed of the program, with a speed of 1700 to
-     * execute 10 concurrent blurs, if we add an if check to choose the best option between row-by-row and col-by-col
-     * for each picture, then the speed goes up to 1400/1500. This is a good option, but has many pitfalls regardless
-     * especially if we take into account how slow and expansive creating a new thread for each line is when we have
-     * huge pictures.
-     *
-     * Splitting the image into subsections, which we concurrently blur achieves approximately the same result.
-     * It requires less thread creation but more operations on each thread, which evens things out, still, trying
-     * to apply line-by-line optimization for the threads on each half may still be worth it.
-     *
-     * The best result I achieved when I split the image into 4 subsections, boosting the blurring speed for 10
-     * blurs to around 800, which is a signifcant improvement. Surprisingly, when I tried to apply line by line
-     * optimization, the time it took to create threads in each section slowed me down to about 1400, Hence my choice
-     * to keep the final version with the 4 subsections, but without line by line optimization for each of them. 
-     *
-     * MORE INPUT AND DATA IN REPORT.
      *
      */
 
@@ -72,10 +61,10 @@ public:
 
 
     // command-line interpreter routines
+
     void addtransformation(string filename, int angle, char plane, int opcode);
 
     void executenexttransformation(string filename);
-
 
     void print_picturestore();
 
@@ -90,7 +79,6 @@ public:
     void display(string filename);
 
     Picture getpicture(string filename);
-
 
     void setpicture(string filename, Picture picture);
 
@@ -122,12 +110,17 @@ public:
 
     void concurrentblur(string filename);
 
+    void jointhreads();
+
+    void blur2(string filename);
+
+    // mandatory alternative "blur" implementations
+
     void sequentialblur(string filename);
 
     void pixelbypixelblur(string filename);
 
 
-    void jointhreads();
 
 
 };

@@ -17,6 +17,7 @@ void PicLibrary::executenexttransformation(string filename) {
     tuple<int, char, int> tuple = getpicture(filename).queuegetnext();
     int angle = get<0>(tuple);
     char dir = get<1>(tuple);
+    getpicture(filename).lockpicture();
     switch (get<2>(tuple)) {
         case 6:
             concurrentinvert(filename);
@@ -37,6 +38,7 @@ void PicLibrary::executenexttransformation(string filename) {
             break;
     }
     getpicture(filename).queuepop();
+    getpicture(filename).unlockpicture();
 }
 
 bool PicLibrary::isinlibrary(string filename) {
@@ -167,14 +169,85 @@ void PicLibrary::flipVH(char plane, string filename) {
     setpicture(filename, cont);
 }
 
-
 void PicLibrary::blur(string filename) {
+    Picture pic = getpicture(filename);
+    Picture cont = Picture(pic.getwidth(), pic.getheight());
+    int eigthheight = pic.getheight() / 4;
+    int eigthwidth = pic.getwidth() / 2;
+    cont.setimage(getpicture(filename).getimage());
+    thread first_eighth([eigthwidth, eigthheight, &pic, &cont, this]() {
+        for (int y = 1; y < eigthwidth; y++) {
+            for (int x = 1; x < eigthheight; x++) {
+                cont.setpixel(y, x, getaveragecol(pic, y, x));
+            }
+        }
+    });
+    thread second_eighth([eigthwidth, eigthheight, &pic, &cont, this]() {
+        for (int y = 1; y < eigthwidth; y++) {
+            for (int x = eigthheight; x < 2 * eigthheight; x++) {
+                cont.setpixel(y, x, getaveragecol(pic, y, x));
+            }
+        }
+    });
+    thread third_eighth([eigthwidth, eigthheight, &pic, &cont, this]() {
+        for (int y = 1; y < eigthwidth; y++) {
+            for (int x = 2 * eigthheight; x < 3 * eigthheight; x++) {
+                cont.setpixel(y, x, getaveragecol(pic, y, x));
+            }
+        }
+    });
+    thread fourth_eighth([eigthwidth, eigthheight, &pic, &cont, this]() {
+        for (int y = 1; y < eigthwidth; y++) {
+            for (int x = 3 * eigthheight; x < pic.getwidth() - 1; x++) {
+                cont.setpixel(y, x, getaveragecol(pic, y, x));
+            }
+        }
+    });
+    thread fifth_eighth([eigthwidth, eigthheight, &pic, &cont, this]() {
+        for (int y = eigthwidth; y < pic.getwidth() - 1; y++) {
+            for (int x = 1; x < eigthheight; x++) {
+                cont.setpixel(y, x, getaveragecol(pic, y, x));
+            }
+        }
+    });
+    thread sixth_eighth([eigthwidth, eigthheight, &pic, &cont, this]() {
+        for (int y = eigthwidth; y < pic.getwidth() - 1; y++) {
+            for (int x = eigthheight; x < 2 * eigthheight; x++) {
+                cont.setpixel(y, x, getaveragecol(pic, y, x));
+            }
+        }
+    });
+    thread seventh_eighth([eigthwidth, eigthheight, &pic, &cont, this]() {
+        for (int y = eigthwidth; y < pic.getwidth() - 1; y++) {
+            for (int x = 2 * eigthheight; x < 3 * eigthheight; x++) {
+                cont.setpixel(y, x, getaveragecol(pic, y, x));
+            }
+        }
+    });
+    thread last_eighth([eigthwidth, eigthheight, &pic, &cont, this]() {
+        for (int y = eigthwidth; y < pic.getwidth(); y++) {
+            for (int x = 3 * eigthheight; x < pic.getheight() - 1; x++) {
+                cont.setpixel(y, x, getaveragecol(pic, y, x));
+            }
+        }
+    });
+    first_eighth.join();
+    second_eighth.join();
+    third_eighth.join();
+    fourth_eighth.join();
+    fifth_eighth.join();
+    sixth_eighth.join();
+    seventh_eighth.join();
+    last_eighth.join();
+    setpicture(filename, cont);
+}
+
+void PicLibrary::blur2(string filename) {
     Picture pic = getpicture(filename);
     Picture cont = Picture(pic.getwidth(), pic.getheight());
     int quarterheight = pic.getheight() / 2;
     int quarterwidth = pic.getwidth() / 2;
     cont.setimage(getpicture(filename).getimage());
-
     thread first_quarter([quarterheight, quarterwidth, &pic, &cont, this]() {
         for (int y = 1; y < quarterwidth; y++) {
             for (int x = 1; x < quarterheight; x++) {
@@ -203,34 +276,11 @@ void PicLibrary::blur(string filename) {
             }
         }
     });
-
     first_quarter.join();
     second_quarter.join();
     third_quarter.join();
     last_quarter.join();
     setpicture(filename, cont);
-}
-
-
-Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
-    Colour avg = Colour(0, 0, 0);
-    int rval = 0;
-    int bval = 0;
-    int gval = 0;
-
-    for (int i = x - 1; i < x + 2; i++) {
-        rval += pic.getpixel(i, y - 1).getred() + pic.getpixel(i, y).getred()
-                + pic.getpixel(i, y + 1).getred();
-        bval += pic.getpixel(i, y - 1).getblue() + pic.getpixel(i, y).getblue()
-                + pic.getpixel(i, y + 1).getblue();
-        gval += pic.getpixel(i, y - 1).getgreen() + pic.getpixel(i, y).getgreen()
-                + pic.getpixel(i, y + 1).getgreen();
-
-    }
-    avg.setred(rval / 9);
-    avg.setblue(bval / 9);
-    avg.setgreen(gval / 9);
-    return avg;
 }
 
 
@@ -268,9 +318,35 @@ void PicLibrary::pixelbypixelblur(string filename) {
 }
 
 
+Colour PicLibrary::getaveragecol(Picture pic, int x, int y) {
+    Colour avg = Colour(0, 0, 0);
+    int rval = 0;
+    int bval = 0;
+    int gval = 0;
+    for (int i = x - 1; i < x + 2; i++) {
+        rval += pic.getpixel(i, y - 1).getred() + pic.getpixel(i, y).getred()
+                + pic.getpixel(i, y + 1).getred();
+        bval += pic.getpixel(i, y - 1).getblue() + pic.getpixel(i, y).getblue()
+                + pic.getpixel(i, y + 1).getblue();
+        gval += pic.getpixel(i, y - 1).getgreen() + pic.getpixel(i, y).getgreen()
+                + pic.getpixel(i, y + 1).getgreen();
+    }
+    avg.setred(rval / 9);
+    avg.setblue(bval / 9);
+    avg.setgreen(gval / 9);
+    return avg;
+}
+
+
 /* PREVIOUS BLUR ATTEMPTS
  *
- * OPTIMIZATION BY SPLITTING INTO 4 SECTIONS OF COLUMNS AND CONCURRENTLY COMPUTING ROW BY ROW
+ * SPLITTING THE IMAGE AND CONCURRENTLY BLURRING 8 EVEN SUBSECTIONS :
+ *
+ *
+ *
+ *
+ *
+ * OPTIMIZATION BY SPLITTING INTO 4 SECTIONS OF COLUMNS AND CONCURRENTLY COMPUTING ROWS :
  *
  * void PicLibrary::blur(string filename) {
     Picture pic = getpicture(filename);
@@ -392,7 +468,7 @@ void PicLibrary::pixelbypixelblur(string filename) {
 }
 
  *
- * OPTIMIZATION BY HALFING AND USING AN IFCHECK TO OPTIMIZE NUMBER OF THREADS CREATED (Large vs Small side)
+ * OPTIMIZATION BY HALVING AND USING AN IFCHECK TO CONCURRENTLY PROCESS LINES ALONG LITTLE SIDE :
  *
  *
 void PicLibrary::blur(string filename) {
