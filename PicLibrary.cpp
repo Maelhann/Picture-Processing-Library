@@ -173,7 +173,7 @@ void PicLibrary::blur(string filename) {
     Picture cont = Picture(pic.getwidth(), pic.getheight());
     int quarterheight = pic.getheight() / 2;
     int quarterwidth = pic.getwidth() / 2;
-    cont.setimage(pic.getimage());
+    cont.setimage(getpicture(filename).getimage());
 
     thread first_quarter([quarterheight, quarterwidth, &pic, &cont, this]() {
         for (int y = 1; y < quarterwidth; y++) {
