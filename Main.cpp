@@ -26,12 +26,9 @@ int main(int argc, char **argv) {
     commands_to_integers.insert(pair<string, int>("flip", 9));
     commands_to_integers.insert(pair<string, int>("blur", 10));
 
-    vector<thread> operation_threads;
-
     PicLibrary lib;
     Picture picture;
     Mat image = Mat();
-
 
     for (int i = 1; i < argc; i++) {
         string img_name = ((string) argv[i]).
@@ -156,9 +153,7 @@ int main(int argc, char **argv) {
                     arguments >> arg;
                     if (lib.isinlibrary(arg)) {
                         lib.addtransformation(arg, 0, 'a', command_index);
-                        operation_threads.emplace_back(thread([&lib, arg]() {
-                            lib.executenexttransformation(arg);
-                        }));
+                        lib.executenexttransformation(arg);
                     } else {
                         cout << "Error : couldn't find any file with a matching name";
                     }
@@ -168,11 +163,6 @@ int main(int argc, char **argv) {
                     return 0;
                 default:
                     break;
-            }
-            for (thread &th : operation_threads) {
-                if (th.joinable()) {
-                    th.join();
-                }
             }
             lib.jointhreads();
         } else {

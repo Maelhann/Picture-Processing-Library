@@ -13,25 +13,8 @@ class PicLibrary {
 
     /* THREAD-SAFETY OF THE PICLIBRARY CLASS :
      *
-     * My Synchronization strategy was to implement a list of operation threads,
-     * each operation thread getting exclusive
-     * access to the image it wants to transform via a mutex lock.
-     *
-     * For each available transformation, the concurrent wrapper works as follow :
-     *  - Add a new thread at the back of the list of active threads performing picture transformations
-     *  - This thread acquires a locks the picture we want to transform
-     *    and executes the transformation before releasing the lock.
-     *
-     * This strategy ensures that no two transformations happen at the same time on the same picture,
-     * making the PicLibrary threadsafe.
-     * Adding lock() and unlock() functions in Pictures gives us a way to independently transform different pictures
-     * concurrently. It is also more efficient and fine grained than locking
-     * PicLibrary with a general mutex, which would still in effect be sequential, even if it means my implementation
-     * is a bit slower.
-     *
-     * Additionally, since new operations are placed at the back of the thread list, and since they need to acquire
-     * the lock of the pictures they want to transform, the operation order is maintained throughout the execution
-     * of our program
+     * My synchronization strategy works as follow, each Picture holds a queue of commands, which I modeled with
+     * tuples
      *
      *
      *
