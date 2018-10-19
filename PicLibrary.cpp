@@ -167,7 +167,7 @@ void PicLibrary::flipVH(char plane, string filename) {
 
 void PicLibrary::blur(string filename) {
     /* ALTERNATIVE IMPLEMENTATIONS COMMENTED AT END OF FILE */
-    active_threads.emplace_back(thread([filename, this]() {
+    // active_threads.emplace_back(thread([filename, this]() {
         Picture pic = getpicture(filename);
         Picture cont = Picture(pic.getwidth(), pic.getheight());
         int quarterheight = pic.getheight() / 2;
@@ -206,7 +206,7 @@ void PicLibrary::blur(string filename) {
         third_quarter.join();
         last_quarter.join();
         setpicture(filename, cont);
-    }));
+    //}));
 }
 
 

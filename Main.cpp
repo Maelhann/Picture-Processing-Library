@@ -7,10 +7,10 @@
 #include "Utils.hpp"
 #include "Picture.hpp"
 #include "PicLibrary.hpp"
-
+#include <thread>
 
 using namespace std;
-
+static int CORE_NUMBERS = std::thread::hardware_concurrency();
 
 int main(int argc, char **argv) {
     map<string, int> commands_to_integers;
@@ -29,6 +29,7 @@ int main(int argc, char **argv) {
     PicLibrary lib;
     Picture picture;
     Mat image = Mat();
+    vector<thread> workerthreads;
 
     for (int i = 1; i < argc; i++) {
         string img_name = ((string) argv[i]).
@@ -151,12 +152,14 @@ int main(int argc, char **argv) {
                     break;
                 case 10 :
                     arguments >> arg;
-                    if (lib.isinlibrary(arg)) {
-                        lib.addtransformation(arg, 0, 'a', command_index);
-                        lib.executenexttransformation(arg);
-                    } else {
-                        cout << "Error : couldn't find any file with a matching name";
-                    }
+                    workerthreads.emplace_back(thread([arg, &lib, command_index]() {
+                        if (lib.isinlibrary(arg)) {
+                            lib.addtransformation(arg, 0, 'a', command_index);
+                            lib.executenexttransformation(arg);
+                        } else {
+                            cout << "Error : couldn't find any file with a matching name";
+                        }
+                    }));
                     break;
                 case 0 :
                     cout << "Now exiting interpreter" << endl;
@@ -164,7 +167,14 @@ int main(int argc, char **argv) {
                 default:
                     break;
             }
-            lib.jointhreads();
+            if (workerthreads.size() == CORE_NUMBERS) {
+                for (thread &th : workerthreads) {
+                    if (th.joinable()) {
+                        th.join();
+                    }
+                }
+            }
+            //lib.jointhreads();
         } else {
             return 0;
         }

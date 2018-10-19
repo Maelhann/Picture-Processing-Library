@@ -59,7 +59,6 @@ private:
     map<string, Picture> store;
     vector<thread> active_threads;
     Utils utils;
-    Mutex lock;
 
 public:
     PicLibrary() {};
