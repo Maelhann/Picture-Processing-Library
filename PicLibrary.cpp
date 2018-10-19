@@ -30,7 +30,7 @@ void PicLibrary::executenexttransformation(string filename) {
             concurrentflip(dir, filename);
             break;
         case 10:
-            blur(filename);
+            concurrentblur(filename);
             break;
         default:
             break;
@@ -167,46 +167,45 @@ void PicLibrary::flipVH(char plane, string filename) {
 
 void PicLibrary::blur(string filename) {
     /* ALTERNATIVE IMPLEMENTATIONS COMMENTED AT END OF FILE */
-    // active_threads.emplace_back(thread([filename, this]() {
-        Picture pic = getpicture(filename);
-        Picture cont = Picture(pic.getwidth(), pic.getheight());
-        int quarterheight = pic.getheight() / 2;
-        int quarterwidth = pic.getwidth() / 2;
-        cont.setimage(getpicture(filename).getimage());
-        thread first_quarter([quarterheight, quarterwidth, &pic, &cont, this]() {
-            for (int y = 1; y < quarterwidth; y++) {
-                for (int x = 1; x < quarterheight; x++) {
-                    cont.setpixel(y, x, getaveragecol(pic, y, x));
-                }
+    Picture pic = getpicture(filename);
+    Picture cont = Picture(pic.getwidth(), pic.getheight());
+    int quarterheight = pic.getheight() / 2;
+    int quarterwidth = pic.getwidth() / 2;
+    cont.setimage(getpicture(filename).getimage());
+    thread first_quarter([quarterheight, quarterwidth, &pic, &cont, this]() {
+        for (int y = 1; y < quarterwidth; y++) {
+            for (int x = 1; x < quarterheight; x++) {
+                cont.setpixel(y, x, getaveragecol(pic, y, x));
             }
-        });
-        thread second_quarter([quarterheight, quarterwidth, &pic, &cont, this]() {
-            for (int y = quarterwidth; y < pic.getwidth() - 1; y++) {
-                for (int x = 1; x < quarterheight; x++) {
-                    cont.setpixel(y, x, getaveragecol(pic, y, x));
-                }
+        }
+    });
+    thread second_quarter([quarterheight, quarterwidth, &pic, &cont, this]() {
+        for (int y = quarterwidth; y < pic.getwidth() - 1; y++) {
+            for (int x = 1; x < quarterheight; x++) {
+                cont.setpixel(y, x, getaveragecol(pic, y, x));
             }
-        });
-        thread third_quarter([quarterheight, quarterwidth, &pic, &cont, this]() {
-            for (int y = 1; y < quarterwidth; y++) {
-                for (int x = quarterheight; x < pic.getheight() - 1; x++) {
-                    cont.setpixel(y, x, getaveragecol(pic, y, x));
-                }
+        }
+    });
+    thread third_quarter([quarterheight, quarterwidth, &pic, &cont, this]() {
+        for (int y = 1; y < quarterwidth; y++) {
+            for (int x = quarterheight; x < pic.getheight() - 1; x++) {
+                cont.setpixel(y, x, getaveragecol(pic, y, x));
             }
-        });
-        thread last_quarter([quarterheight, quarterwidth, &pic, &cont, this]() {
-            for (int y = quarterwidth; y < pic.getwidth() - 1; y++) {
-                for (int x = quarterheight; x < pic.getheight() - 1; x++) {
-                    cont.setpixel(y, x, getaveragecol(pic, y, x));
-                }
+        }
+    });
+    thread last_quarter([quarterheight, quarterwidth, &pic, &cont, this]() {
+        for (int y = quarterwidth; y < pic.getwidth() - 1; y++) {
+            for (int x = quarterheight; x < pic.getheight() - 1; x++) {
+                cont.setpixel(y, x, getaveragecol(pic, y, x));
             }
-        });
-        first_quarter.join();
-        second_quarter.join();
-        third_quarter.join();
-        last_quarter.join();
-        setpicture(filename, cont);
-    //}));
+        }
+    });
+    first_quarter.join();
+    second_quarter.join();
+    third_quarter.join();
+    last_quarter.join();
+    setpicture(filename, cont);
+
 }
 
 
@@ -272,32 +271,42 @@ void PicLibrary::addtransformation(string filename, int angle, char plane, int o
 
 void PicLibrary::concurrentinvert(string filename) {
     active_threads.emplace_back(std::thread([this, filename]() {
+        getpicture(filename).lockpicture();
         invert(filename);
+        getpicture(filename).unlockpicture();
     }));
 }
 
 void PicLibrary::concurrentgrayscale(string filename) {
     active_threads.emplace_back(std::thread([this, filename]() {
+        getpicture(filename);
         grayscale(filename);
+        getpicture(filename);
     }));
 }
 
 void PicLibrary::concurrentrotate(int angle, string filename) {
     active_threads.emplace_back(std::thread([this, angle, filename]() {
+        getpicture(filename).lockpicture();
         rotate(angle, filename);
+        getpicture(filename).unlockpicture();
     }));
 }
 
 void PicLibrary::concurrentflip(char dir, string filename) {
     active_threads.emplace_back(std::thread([this, dir, filename]() {
+        getpicture(filename).lockpicture();
         flipVH(dir, filename);
+        getpicture(filename).unlockpicture();
     }));
 }
 
 
 void PicLibrary::concurrentblur(string filename) {
     active_threads.emplace_back(std::thread([this, filename]() {
+        getpicture(filename).lockpicture();
         blur(filename);
+        getpicture(filename).unlockpicture();
     }));
 }
 

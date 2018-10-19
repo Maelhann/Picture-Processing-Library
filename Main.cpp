@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
     PicLibrary lib;
     Picture picture;
     Mat image = Mat();
-    vector<thread> workerthreads;
+
 
     for (int i = 1; i < argc; i++) {
         string img_name = ((string) argv[i]).
@@ -152,27 +152,18 @@ int main(int argc, char **argv) {
                     break;
                 case 10 :
                     arguments >> arg;
-                    workerthreads.emplace_back(thread([arg, &lib, command_index]() {
                         if (lib.isinlibrary(arg)) {
                             lib.addtransformation(arg, 0, 'a', command_index);
                             lib.executenexttransformation(arg);
                         } else {
                             cout << "Error : couldn't find any file with a matching name";
                         }
-                    }));
                     break;
                 case 0 :
                     cout << "Now exiting interpreter" << endl;
                     return 0;
                 default:
                     break;
-            }
-            if (workerthreads.size() == CORE_NUMBERS) {
-                for (thread &th : workerthreads) {
-                    if (th.joinable()) {
-                        th.join();
-                    }
-                }
             }
             //lib.jointhreads();
         } else {
