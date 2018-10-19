@@ -8,12 +8,7 @@ using namespace std;
 
 void PicLibrary::loadpicture(string path, string filename) {
     Picture picture = Picture(path);
-
-    active_threads.emplace_back(thread([filename, picture, this]() {
-        lock.lock();
-        store.insert(pair<string, Picture>(filename, picture));
-        lock.unlock();
-    }));
+    store.insert(pair<string, Picture>(filename, picture));
 }
 
 void PicLibrary::executenexttransformation(string filename) {
@@ -69,11 +64,9 @@ void PicLibrary::setpicture(string filename, Picture picture) {
 }
 
 void PicLibrary::unloadpicture(string filename) {
-    active_threads.emplace_back(thread([this, filename]() {
-        lock.lock();
-        PicLibrary::store.erase(filename);
-        lock.unlock();
-    }));
+    assert(isinlibrary(filename));
+    PicLibrary::store.erase(filename);
+
 }
 
 void PicLibrary::print_picturestore() {
@@ -83,11 +76,7 @@ void PicLibrary::print_picturestore() {
 }
 
 void PicLibrary::savepicture(string filename, string path) {
-    active_threads.emplace_back(thread([this, path, filename]() {
-        lock.lock();
-        utils.saveimage(getpicture(filename).getimage(), path);
-        lock.unlock();
-    }));
+    utils.saveimage(getpicture(filename).getimage(), path);
 }
 
 void PicLibrary::display(string filename) {
@@ -178,45 +167,45 @@ void PicLibrary::flipVH(char plane, string filename) {
 
 void PicLibrary::blur(string filename) {
     /* ALTERNATIVE IMPLEMENTATIONS COMMENTED AT END OF FILE */
-    active_threads.emplace_back(thread([filename,this](){
-    Picture pic = getpicture(filename);
-    Picture cont = Picture(pic.getwidth(), pic.getheight());
-    int quarterheight = pic.getheight() / 2;
-    int quarterwidth = pic.getwidth() / 2;
-    cont.setimage(getpicture(filename).getimage());
-    thread first_quarter([quarterheight, quarterwidth, &pic, &cont, this]() {
-        for (int y = 1; y < quarterwidth; y++) {
-            for (int x = 1; x < quarterheight; x++) {
-                cont.setpixel(y, x, getaveragecol(pic, y, x));
+    active_threads.emplace_back(thread([filename, this]() {
+        Picture pic = getpicture(filename);
+        Picture cont = Picture(pic.getwidth(), pic.getheight());
+        int quarterheight = pic.getheight() / 2;
+        int quarterwidth = pic.getwidth() / 2;
+        cont.setimage(getpicture(filename).getimage());
+        thread first_quarter([quarterheight, quarterwidth, &pic, &cont, this]() {
+            for (int y = 1; y < quarterwidth; y++) {
+                for (int x = 1; x < quarterheight; x++) {
+                    cont.setpixel(y, x, getaveragecol(pic, y, x));
+                }
             }
-        }
-    });
-    thread second_quarter([quarterheight, quarterwidth, &pic, &cont, this]() {
-        for (int y = quarterwidth; y < pic.getwidth() - 1; y++) {
-            for (int x = 1; x < quarterheight; x++) {
-                cont.setpixel(y, x, getaveragecol(pic, y, x));
+        });
+        thread second_quarter([quarterheight, quarterwidth, &pic, &cont, this]() {
+            for (int y = quarterwidth; y < pic.getwidth() - 1; y++) {
+                for (int x = 1; x < quarterheight; x++) {
+                    cont.setpixel(y, x, getaveragecol(pic, y, x));
+                }
             }
-        }
-    });
-    thread third_quarter([quarterheight, quarterwidth, &pic, &cont, this]() {
-        for (int y = 1; y < quarterwidth; y++) {
-            for (int x = quarterheight; x < pic.getheight() - 1; x++) {
-                cont.setpixel(y, x, getaveragecol(pic, y, x));
+        });
+        thread third_quarter([quarterheight, quarterwidth, &pic, &cont, this]() {
+            for (int y = 1; y < quarterwidth; y++) {
+                for (int x = quarterheight; x < pic.getheight() - 1; x++) {
+                    cont.setpixel(y, x, getaveragecol(pic, y, x));
+                }
             }
-        }
-    });
-    thread last_quarter([quarterheight, quarterwidth, &pic, &cont, this]() {
-        for (int y = quarterwidth; y < pic.getwidth() - 1; y++) {
-            for (int x = quarterheight; x < pic.getheight() - 1; x++) {
-                cont.setpixel(y, x, getaveragecol(pic, y, x));
+        });
+        thread last_quarter([quarterheight, quarterwidth, &pic, &cont, this]() {
+            for (int y = quarterwidth; y < pic.getwidth() - 1; y++) {
+                for (int x = quarterheight; x < pic.getheight() - 1; x++) {
+                    cont.setpixel(y, x, getaveragecol(pic, y, x));
+                }
             }
-        }
-    });
-    first_quarter.join();
-    second_quarter.join();
-    third_quarter.join();
-    last_quarter.join();
-    setpicture(filename, cont);
+        });
+        first_quarter.join();
+        second_quarter.join();
+        third_quarter.join();
+        last_quarter.join();
+        setpicture(filename, cont);
     }));
 }
 

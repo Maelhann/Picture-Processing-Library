@@ -44,8 +44,10 @@ class PicLibrary {
      * , I have equipped each picture with a Mutex lock to ensure exclusive access to the picture for each of
      * my transformation functions and avoid potential race conditions.
      *
-     * In order to enable the interpreter routines to run concurrently without risking race conditions and
-     * problems with filenames, I added a global lock to PicLibrary which I only use when performing these routines.
+     * The interpreter routine functions save, load, unload and display are all called atomically and rely on utils,
+     * as such, they can't really be atomically optimized, and are very light operations. I found that adding
+     * concurrency for these routines is slower than just letting them be executed sequentially, as that would
+     * imply having to lock our entire library each time to avoid race conditions on our image store.
      *
      *
      *
