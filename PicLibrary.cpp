@@ -35,7 +35,7 @@ void PicLibrary::executenexttransformation(string filename) {
             concurrentflip(dir, filename);
             break;
         case 10:
-            concurrentblur(filename);
+            blur(filename);
             break;
         default:
             break;
@@ -178,6 +178,7 @@ void PicLibrary::flipVH(char plane, string filename) {
 
 void PicLibrary::blur(string filename) {
     /* ALTERNATIVE IMPLEMENTATIONS COMMENTED AT END OF FILE */
+    active_threads.emplace_back(thread([filename,this](){
     Picture pic = getpicture(filename);
     Picture cont = Picture(pic.getwidth(), pic.getheight());
     int quarterheight = pic.getheight() / 2;
@@ -216,6 +217,7 @@ void PicLibrary::blur(string filename) {
     third_quarter.join();
     last_quarter.join();
     setpicture(filename, cont);
+    }));
 }
 
 
@@ -302,6 +304,7 @@ void PicLibrary::concurrentflip(char dir, string filename) {
         flipVH(dir, filename);
     }));
 }
+
 
 void PicLibrary::concurrentblur(string filename) {
     active_threads.emplace_back(std::thread([this, filename]() {

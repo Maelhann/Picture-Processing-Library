@@ -46,7 +46,7 @@ class PicLibrary {
      *
      * In order to enable the interpreter routines to run concurrently without risking race conditions and
      * problems with filenames, I added a global lock to PicLibrary which I only use when performing these routines.
-     * 
+     *
      *
      *
      */
