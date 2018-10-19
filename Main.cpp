@@ -165,7 +165,7 @@ int main(int argc, char **argv) {
                 default:
                     break;
             }
-            //lib.jointhreads();
+            lib.jointhreads();
         } else {
             return 0;
         }

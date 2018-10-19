@@ -1,3 +1,5 @@
+#include <utility>
+
 #include "PicLibrary.hpp"
 #include "Colour.hpp"
 #include "Utils.hpp"
@@ -7,15 +9,13 @@ using namespace std;
 
 
 void PicLibrary::loadpicture(string path, string filename) {
-    Picture picture = Picture(path);
-    store.insert(pair<string, Picture>(filename, picture));
+    store.insert(pair<string, Picture>(filename, Picture(std::move(path))));
 }
 
 void PicLibrary::executenexttransformation(string filename) {
     tuple<int, char, int> tuple = getpicture(filename).queuegetnext();
     int angle = get<0>(tuple);
     char dir = get<1>(tuple);
-    getpicture(filename).lockpicture();
     switch (get<2>(tuple)) {
         case 6:
             concurrentinvert(filename);
@@ -36,37 +36,28 @@ void PicLibrary::executenexttransformation(string filename) {
             break;
     }
     getpicture(filename).queuepop();
-    getpicture(filename).unlockpicture();
 }
 
 bool PicLibrary::isinlibrary(string filename) {
-    auto picture_iter = store.find(filename);
-    if (picture_iter == store.end()) {
-        return false;
-    } else {
-        return true;
-    }
+    return store.find(filename) != store.end();
 }
 
 Picture PicLibrary::getpicture(string filename) {
     assert(isinlibrary(filename));
-    auto picture_iter = store.find(filename);
-    return picture_iter->second;
+    return store.find(filename)->second;
 }
 
 void PicLibrary::setpicture(string filename, Picture picture) {
-    auto picture_iter = store.find(filename);
-    if (picture_iter == store.end()) {
+    if (!isinlibrary(filename)) {
         PicLibrary::store.insert(pair<string, Picture>(filename, picture));
     } else {
-        picture_iter->second = picture;
+        store.find(filename)->second = picture;
     }
 }
 
 void PicLibrary::unloadpicture(string filename) {
     assert(isinlibrary(filename));
     PicLibrary::store.erase(filename);
-
 }
 
 void PicLibrary::print_picturestore() {
@@ -76,11 +67,11 @@ void PicLibrary::print_picturestore() {
 }
 
 void PicLibrary::savepicture(string filename, string path) {
-    utils.saveimage(getpicture(filename).getimage(), path);
+    utils.saveimage(getpicture(std::move(filename)).getimage(), std::move(path));
 }
 
 void PicLibrary::display(string filename) {
-    utils.displayimage(getpicture(filename).getimage());
+    utils.displayimage(getpicture(std::move(filename)).getimage());
 }
 
 
@@ -205,7 +196,6 @@ void PicLibrary::blur(string filename) {
     third_quarter.join();
     last_quarter.join();
     setpicture(filename, cont);
-
 }
 
 
@@ -468,7 +458,7 @@ void PicLibrary::jointhreads() {
             if (th.joinable()) {
                 th.join();
             }
-        }
+x        }
     });
     first_quarter.join();
     second_quarter.join();

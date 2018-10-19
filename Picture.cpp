@@ -1,3 +1,5 @@
+#include <utility>
+
 #include "Picture.hpp"
 #include <tuple>
 
@@ -5,14 +7,14 @@ using namespace std;
 using namespace cv;
 
 Picture::Picture(string path) {
-    img = imgio.loadimage(path);
+    img = imgio.loadimage(std::move(path));
 }
 
 Picture::Picture(int width, int height) {
     img = imgio.createimage(width, height);
 }
 
-Picture::Picture() {}
+Picture::Picture() = default;
 
 
 void Picture::lockpicture() {
