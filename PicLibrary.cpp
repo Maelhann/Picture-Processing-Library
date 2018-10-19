@@ -8,8 +8,11 @@ using namespace std;
 
 void PicLibrary::loadpicture(string path, string filename) {
     Picture picture = Picture(path);
+
     active_threads.emplace_back(thread([filename, picture, this]() {
+        lock.lock();
         store.insert(pair<string, Picture>(filename, picture));
+        lock.unlock();
     }));
 }
 
@@ -67,8 +70,9 @@ void PicLibrary::setpicture(string filename, Picture picture) {
 
 void PicLibrary::unloadpicture(string filename) {
     active_threads.emplace_back(thread([this, filename]() {
+        lock.lock();
         PicLibrary::store.erase(filename);
-
+        lock.unlock();
     }));
 }
 
@@ -80,7 +84,9 @@ void PicLibrary::print_picturestore() {
 
 void PicLibrary::savepicture(string filename, string path) {
     active_threads.emplace_back(thread([this, path, filename]() {
+        lock.lock();
         utils.saveimage(getpicture(filename).getimage(), path);
+        lock.unlock();
     }));
 }
 

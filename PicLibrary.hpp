@@ -44,6 +44,10 @@ class PicLibrary {
      * , I have equipped each picture with a Mutex lock to ensure exclusive access to the picture for each of
      * my transformation functions and avoid potential race conditions.
      *
+     * In order to enable the interpreter routines to run concurrently without risking race conditions and
+     * problems with filenames, I added a global lock to PicLibrary which I only use when performing these routines.
+     * 
+     *
      *
      */
 
@@ -53,6 +57,7 @@ private:
     map<string, Picture> store;
     vector<thread> active_threads;
     Utils utils;
+    Mutex lock;
 
 public:
     PicLibrary() {};
@@ -111,8 +116,6 @@ public:
     void concurrentblur(string filename);
 
     void jointhreads();
-
-    void blur2(string filename);
 
     // mandatory alternative "blur" implementations
 
