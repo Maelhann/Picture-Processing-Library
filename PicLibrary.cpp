@@ -17,8 +17,6 @@ void PicLibrary::executenexttransformation(string filename) {
     tuple<int, char, int> tuple = getpicture(filename).queuegetnext();
     int angle = get<0>(tuple);
     char dir = get<1>(tuple);
-
-    getpicture(filename).lockpicture();
     switch (get<2>(tuple)) {
         case 6:
             concurrentinvert(filename);
@@ -38,7 +36,6 @@ void PicLibrary::executenexttransformation(string filename) {
         default:
             break;
     }
-    getpicture(filename).unlockpicture();
     getpicture(filename).queuepop();
 }
 

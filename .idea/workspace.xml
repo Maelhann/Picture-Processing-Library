@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/PicLibrary.cpp" line="534" mnemonic="0" />
+    <bookmark url="file://$PROJECT_DIR$/PicLibrary.cpp" line="531" mnemonic="0" />
   </component>
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true" buildAllGenerated="true">
     <generated>
@@ -15,11 +15,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b4e619fd-1766-4204-87f3-555f5a41ea13" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Main.o" beforeDir="false" afterPath="$PROJECT_DIR$/Main.o" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PicLibrary.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/PicLibrary.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PicLibrary.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/PicLibrary.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PicLibrary.o" beforeDir="false" afterPath="$PROJECT_DIR$/PicLibrary.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/ducks2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/ducks2.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/picture_lib" beforeDir="false" afterPath="$PROJECT_DIR$/picture_lib" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
@@ -80,13 +77,13 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="cpp" value="6531" />
+          <entry key="cpp" value="6533" />
           <entry key="hpp" value="2216" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="ObjectiveC" value="8747" />
+          <entry key="ObjectiveC" value="8749" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -131,8 +128,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/PicLibrary.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="429">
-              <caret line="69" column="45" selection-start-line="69" selection-start-column="45" selection-end-line="69" selection-end-column="45" />
+            <state relative-caret-position="345">
+              <caret line="23" column="15" lean-forward="true" selection-start-line="23" selection-start-column="15" selection-end-line="23" selection-end-column="15" />
               <folding>
                 <element signature="e#0#25#0" expanded="true" />
               </folding>
@@ -288,12 +285,12 @@
       <workItem from="1539833787383" duration="4426000" />
       <workItem from="1539858205022" duration="14263000" />
       <workItem from="1539880034140" duration="11606000" />
-      <workItem from="1539906024989" duration="1603000" />
+      <workItem from="1539906024989" duration="1962000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="123130000" />
+    <option name="totallyTimeSpent" value="123489000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="67" y="25" width="1853" height="1055" extended-state="6" />
@@ -426,8 +423,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/PicLibrary.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="429">
-          <caret line="69" column="45" selection-start-line="69" selection-start-column="45" selection-end-line="69" selection-end-column="45" />
+        <state relative-caret-position="345">
+          <caret line="23" column="15" lean-forward="true" selection-start-line="23" selection-start-column="15" selection-end-line="23" selection-end-column="15" />
           <folding>
             <element signature="e#0#25#0" expanded="true" />
           </folding>
